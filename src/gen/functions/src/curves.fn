@@ -1,0 +1,704 @@
+
+group Curves;
+
+import utils.pointfield.attractor.*;
+
+// *******************
+// *** Curve functions
+// *******************
+
+fn Supercircle {
+    fout QT2d;
+    interface CurveFunction;
+
+    parameter double a;
+    parameter double offset;
+    parameter int count;
+
+    init {
+        a = Math.random()*4 + .01;
+        count = (int)(Math.random()*1000) + 100;
+        offset = Math.random()*Math.PI;
+    }
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            double t1 = 2*Math.PI*t + offset;
+            APoint2d r = new APoint2d();
+            double c = Math.cos(t1);
+            double s = Math.sin(t1);
+            r.x = Math.pow(Math.abs(c), a)*Math.signum(c);
+            r.y = Math.pow(Math.abs(s), a)*Math.signum(s);
+            return r;
+        }
+    }
+
+    eval {return qt;}
+}
+
+fn Supershape_ab1 {
+    fout QT2d;
+    interface CurveFunction;
+
+    parameter double offset;
+    parameter double m;
+    parameter double n1;
+    parameter double n2;
+    parameter double n3;
+    //parameter double a;
+    //parameter double b;
+    parameter int count;
+
+    init {
+        m = Math.random()*7 + .001;
+        n1 = Math.random()*100 + .001;
+        n2 = Math.random()*100 + .001;
+        n3 = Math.random()*100 + .001;
+        count = (int)(Math.random()*2000) + 500;
+        offset = Math.random()*Math.PI;
+    }
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            double t1 = 2*Math.PI*t + offset;
+            APoint2d r = new APoint2d();
+
+            double rad;
+            double tx,ty;
+
+            tx = Math.abs( Math.cos(m * t1 / 4) / 1 );
+            tx = Math.pow(tx,n2);
+
+            ty = Math.abs( Math.sin(m * t1 / 4) / 1 );
+            ty = Math.pow(ty,n3);
+
+            rad = Math.pow(tx+ty,1/n1);
+            if (Math.abs(rad) == 0) {
+                r.x = 0;
+                r.y = 0;
+            } else {
+                rad = 1 / rad;
+                r.x = rad * Math.cos(t1);
+                r.y = rad * Math.sin(t1);
+            }
+
+            return r;
+        }
+    }
+
+    eval {return qt;}
+}
+
+fn Supershape_ab2 {
+    fout QT2d;
+    interface CurveFunction;
+
+    parameter double offset;
+    parameter double m;
+    parameter double n1;
+    parameter double n2;
+    parameter double n3;
+    parameter double a;
+    parameter double b;
+    parameter int count;
+
+    init {
+        m = Math.random()*7 + .001;
+        n1 = Math.random()*100 + .001;
+        n2 = Math.random()*100 + .001;
+        n3 = Math.random()*100 + .001;
+        a = Math.random()*1 + .5;
+        b = Math.random()*1 + .5;
+        count = (int)(Math.random()*2000) + 500;
+        offset = Math.random()*Math.PI;
+    }
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            double t1 = 2*Math.PI*t + offset;
+            APoint2d r = new APoint2d();
+
+            double rad;
+            double tx,ty;
+
+            tx = Math.abs( Math.cos(m * t1 / 4) / a );
+            tx = Math.pow(tx,n2);
+
+            ty = Math.abs( Math.sin(m * t1 / 4) / b );
+            ty = Math.pow(ty,n3);
+
+            rad = Math.pow(tx+ty,1/n1);
+            if (Math.abs(rad) == 0) {
+                r.x = 0;
+                r.y = 0;
+            } else {
+                rad = 1 / rad;
+                r.x = rad * Math.cos(t1);
+                r.y = rad * Math.sin(t1);
+            }
+
+            return r;
+        }
+    }
+
+    eval {return qt;}
+}
+
+fn Spiral_log {
+    fout QT2d;
+    interface CurveFunction;
+
+    parameter double offset;
+    parameter double a;
+    parameter double extent;
+    parameter int count;
+
+    init {
+        a = Math.random()*3 + 1;
+        count = (int)(Math.random()*2000) + 500;
+        extent = Math.random()*11 + 1;
+        offset = Math.random()*2*Math.PI;
+    }
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            double t1 = 2*Math.PI*t * extent;
+            APoint2d r = new APoint2d();
+
+            double rad = Math.exp(a*t);
+            r.x = Math.cos(t1 + offset) * rad;
+            r.y = Math.sin(t1 + offset) * rad;
+
+            return r;
+        }
+    }
+
+    eval {return qt;}
+}
+
+fn Spiral_archimedes {
+    fout QT2d;
+    interface CurveFunction;
+
+    parameter double offset;
+    parameter double a;
+    parameter double extent;
+    parameter int count;
+
+    init {
+        a = Math.random()*10 + 1;
+        count = (int)(Math.random()*2000) + 500;
+        extent = Math.random()*11 + 1;
+        offset = Math.random()*2*Math.PI;
+    }
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            double t1 = 2*Math.PI*t * extent;
+            APoint2d r = new APoint2d();
+
+            double rad = a*t;
+            r.x = Math.cos(t1 + offset) * rad;
+            r.y = Math.sin(t1 + offset) * rad;
+
+            return r;
+        }
+    }
+
+    eval {return qt;}
+}
+
+fn Spiral_fermat {
+    fout QT2d;
+    interface CurveFunction;
+
+    parameter double a;
+    parameter double extent;
+    parameter int count;
+
+    init {
+        a = Math.random()*10 + 1;
+        count = (int)(Math.random()*2000) + 500;
+        extent = Math.random()*11 + 1;
+    }
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            double t1 = 2*Math.PI*t * extent;
+            APoint2d r = new APoint2d();
+
+            double rad = a*Math.sqrt(Math.abs(2*t-1));
+            r.x = Math.cos(t1) * rad * Math.signum(2*t-1);
+            r.y = Math.sin(t1) * rad;
+
+            return r;
+        }
+    }
+
+    eval {return qt;}
+}
+
+fn Spiral_fermat1 {
+    fout QT2d;
+    interface CurveFunction;
+
+    parameter double offset;
+    parameter double a;
+    parameter double extent;
+    parameter int count;
+
+    init {
+        a = Math.random()*10 + 1;
+        count = (int)(Math.random()*2000) + 500;
+        extent = Math.random()*11 + 1;
+        offset = Math.random()*Math.PI;
+    }
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            double t1 = 2*Math.PI*t * extent;
+            APoint2d r = new APoint2d();
+
+            double rad = a*Math.sqrt(Math.abs(2*t-1));
+            r.x = Math.cos(t1) * rad * Math.signum(2*t-1);
+            r.y = Math.sin(t1 + offset) * rad;
+
+            return r;
+        }
+    }
+
+    eval {return qt;}
+}
+
+fn Spiral_hyperbolic {
+    fout QT2d;
+    interface CurveFunction;
+
+    parameter double offset;
+    parameter double a;
+    parameter double b;
+    parameter double extent;
+    parameter int count;
+
+    init {
+        a = Math.random()*10 + 1;
+        b = Math.random()*10 + 1;
+        extent = Math.random()*11 + 1;
+        count = (int)(Math.random()*2000) + 500;
+        offset = Math.random()*2*Math.PI;
+    }
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            double t1 = 2*Math.PI*t * extent;
+            APoint2d r = new APoint2d();
+
+            double rad = a/(b*t+.03);
+            r.x = Math.cos(t1 + offset) * rad;
+            r.y = Math.sin(t1 + offset) * rad;
+
+            return r;
+        }
+    }
+
+    eval {return qt;}
+}
+
+fn Spiral_lituus {
+    fout QT2d;
+    interface CurveFunction;
+
+    //parameter double offset;
+    parameter double a;
+    parameter double b;
+    parameter double extent;
+    parameter int count;
+
+    init {
+        a = Math.random()*10 + 1;
+        b = Math.random()*10 + 1;
+        count = (int)(Math.random()*2000) + 500;
+        extent = Math.random()*11 + 1;
+        //offset = Math.random()*2*Math.PI;
+    }
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            double t1 = 2*Math.PI*t * extent;
+            APoint2d r = new APoint2d();
+
+            double rad = a*Math.sqrt(1/(b*Math.abs(2*t-1)+.1));
+            r.x = Math.cos(t1) * rad * Math.signum(2*t-1);
+            r.y = Math.sin(t1) * rad;
+
+            return r;
+        }
+    }
+
+    eval {return qt;}
+}
+
+fn Spiral_lituus1 {
+    fout QT2d;
+    interface CurveFunction;
+
+    parameter double offset;
+    parameter double a;
+    parameter double b;
+    parameter double extent;
+    parameter int count;
+
+    init {
+        a = Math.random()*10 + 1;
+        b = Math.random()*10 + 1;
+        count = (int)(Math.random()*2000) + 500;
+        extent = Math.random()*11 + 1;
+        offset = Math.random()*2*Math.PI;
+    }
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            double t1 = 2*Math.PI*t * extent;
+            APoint2d r = new APoint2d();
+
+            double rad = a*Math.sqrt(1/(b*Math.abs(2*t-1)+.1));
+            r.x = Math.cos(t1) * rad * Math.signum(2*t-1);
+            r.y = Math.sin(t1+offset) * rad;
+
+            return r;
+        }
+    }
+
+    eval {return qt;}
+}
+
+fn Spiral_tanh {
+    fout QT2d;
+    interface CurveFunction;
+
+    parameter double a;
+    parameter int count;
+
+    init {
+        a = Math.random()*3 + .1;
+        count = (int)(Math.random()*2000) + 500;
+    }
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            double t1 = 1*Math.PI*t - Math.PI/2;
+            APoint2d r = new APoint2d();
+
+            r.x = Math.sinh(2*t1) / ( Math.cos(2*a*t1) + Math.cosh(2*t1) );
+            r.x = Math.sin(2*a*t1) / ( Math.cos(2*a*t1) + Math.cosh(2*t1) );
+
+            return r;
+        }
+    }
+
+    eval {return qt;}
+}
+
+// *****************************
+// *** Noise & User based curves
+// *****************************
+
+fn Curve_noise1 {
+    nbin NoiseFunction noise(ContextNone);
+    fout QT2d;
+    interface CurveFunction;
+
+    parameter double a;
+    parameter int count;
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            getNode(0).setContext(new ContextNone());
+            NoiseFunction n = (NoiseFunction) getNode(0).evaluate();
+            
+            APoint2d x = new APoint2d();
+            x.x = n.noise(a*t,0,0);
+            x.y = n.noise(a*t+100,100,100);
+            return x;
+        }
+    }
+
+    init {
+        a = Math.random()*10 + .1;
+        count = (int)(Math.random()*2000) + 500;
+    }
+
+    eval {return qt;}
+}
+
+fn Curve_noise2 {
+    nbin NoiseFunction noise(ContextNone);
+    fout QT3d;
+    interface CurveFunction;
+
+    parameter double a;
+    parameter int count;
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT3d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT3d qt;
+
+        public APoint evalCurve(double t) {
+            getNode(0).setContext(new ContextNone());
+            NoiseFunction n = (NoiseFunction) getNode(0).evaluate();
+            
+            APoint3d x = new APoint3d();
+            x.x = n.noise(a*t,0,0);
+            x.y = n.noise(a*t+100,100,100);
+            x.z = n.noise(a*t+300,300,300);
+            return x;
+        }
+    }
+
+    init {
+        a = Math.random()*10 + .1;
+        count = (int)(Math.random()*2000) + 500;
+    }
+
+    eval {return qt;}
+}
+
+fn Curve_fractal1 {
+    nbin NoiseFunction noise(ContextNone);
+    nbin NoiseFractal fractal(ContextNone);
+    fout QT2d;
+    interface CurveFunction;
+
+    parameter double a;
+    parameter int count;
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT2d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT2d qt;
+
+        public APoint evalCurve(double t) {
+            getNode(0).setContext(new ContextNone());
+            getNode(1).setContext(new ContextNone());
+            NoiseFunction n = (NoiseFunction) getNode(0).evaluate();
+            NoiseFractal f = (NoiseFractal) getNode(1).evaluate();
+            
+            APoint2d x = new APoint2d();
+            x.x = f.evalFractal(n,a*t,0,0);
+            x.y = f.evalFractal(n,a*t+100,100,100);
+            return x;
+        }
+    }
+
+    init {
+        a = Math.random()*3 + .1;
+        count = (int)(Math.random()*2000) + 500;
+    }
+
+    eval {return qt;}
+}
+
+fn Curve_fractal2 {
+    nbin NoiseFunction noise(ContextNone);
+    nbin NoiseFractal fractal(ContextNone);
+    fout QT3d;
+    interface CurveFunction;
+
+    parameter double a;
+    parameter int count;
+
+    setup {
+        if(!built || parametersChanged()) {
+            qt = new QT3d();
+            new Curve().process(this,qt,count);
+            setParametersChanged(false);
+            built = true;
+        }
+    }
+
+    local {
+        private boolean built;
+        private QT3d qt;
+
+        public APoint evalCurve(double t) {
+            getNode(0).setContext(new ContextNone());
+            getNode(1).setContext(new ContextNone());
+            NoiseFunction n = (NoiseFunction) getNode(0).evaluate();
+            NoiseFractal f = (NoiseFractal) getNode(1).evaluate();
+            
+            APoint3d x = new APoint3d();
+            x.x = f.evalFractal(n,a*t,0,0);
+            x.y = f.evalFractal(n,a*t+100,100,100);
+            x.z = f.evalFractal(n,a*t+300,300,300);
+            return x;
+        }
+    }
+
+    init {
+        a = Math.random()*3 + .1;
+        count = (int)(Math.random()*2000) + 500;
+    }
+
+    eval {return qt;}
+}

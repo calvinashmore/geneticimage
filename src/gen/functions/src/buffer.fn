@@ -1,0 +1,79 @@
+
+group Buffer;
+
+fn sampleBuffer_d {
+    fout LDouble;
+
+    in LVect2d pos;
+    in Buffer_d img;
+    in GridScaleMethod scale;
+    in GridWrapMethod xwrap;
+    in GridWrapMethod ywrap;
+
+    eval {
+        int xres = img.getXRes();
+        return img.evalScale(xres*pos.x, xres*pos.y, xwrap, ywrap, scale);
+    }
+
+    estimate {
+        return new Estimate_d();
+    }
+}
+/*
+fn sampleBuffer_v2 {
+    fout LDouble;
+
+    in LVect2d pos;
+    in Buffer_v2 img;
+    in GridScaleMethod scale;
+    in GridWrapMethod xwrap;
+    in GridWrapMethod ywrap;
+
+    eval {
+        int xres = img.getXRes();
+        return img.evalScale(xres*pos.x, xres*pos.y, xwrap, ywrap, scale);
+    }
+
+    estimate {
+        return new Estimate_v2();
+    }
+}
+
+fn sampleBuffer_v3 {
+    fout LDouble;
+
+    in LVect2d pos;
+    in Buffer_v3 img;
+    in GridScaleMethod scale;
+    in GridWrapMethod xwrap;
+    in GridWrapMethod ywrap;
+
+    eval {
+        int xres = img.getXRes();
+        return img.evalScale(xres*pos.x, xres*pos.y, xwrap, ywrap, scale);
+    }
+
+    estimate {
+        return new Estimate_v3();
+    }
+}
+
+fn sampleBuffer_col {
+    fout LDouble;
+
+    in LVect2d pos;
+    in Buffer_col img;
+    in GridScaleMethod scale;
+    in GridWrapMethod xwrap;
+    in GridWrapMethod ywrap;
+
+    eval {
+        int xres = img.getXRes();
+        return img.evalScale(xres*pos.x, xres*pos.y, xwrap, ywrap, scale);
+    }
+
+    estimate {
+        return new Estimate_col();
+    }
+}
+*/

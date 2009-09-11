@@ -1,0 +1,555 @@
+
+group Quadtree;
+
+import utils.pointfield.attractor.*;
+
+// ***********************
+// *** Quadtree results 2d
+// ***********************
+
+fn qt2_density {
+    in QT2d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint2d> contents = qt.getContents(x1, y1, rad);
+        int ok = 0;
+        for(APoint2d point : contents) {
+            if(point.distanceSquared(x1, y1) < rad*rad)
+                ok++;
+        }
+
+        return new LDouble((double)ok/qt.getMaxDensity());
+    }
+}
+
+fn qt2_density1 {
+    in QT2d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint2d> contents = qt.getContents(x1, y1, rad);
+        int ok = 0;
+
+        double dist2=100;
+        for(APoint2d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2)
+                dist2 = d;
+            if(point.distanceSquared(x1, y1) < rad*rad)
+                ok++;
+        }
+
+        dist2 = Math.sqrt(dist2)/rad;
+        return new LDouble((double)ok*(1 - dist2)/qt.getMaxDensity());
+    }
+}
+
+fn qt2_nearestDist {
+    in QT2d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint2d> contents = qt.getContents(x1, y1, rad);
+
+        double dist2=100;
+        for(APoint2d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2)
+                dist2 = d;
+        }
+
+        dist2 = Math.sqrt(dist2)/rad;
+        if(dist2 > 1)
+            return new LDouble(0);
+        return new LDouble(1 - dist2);
+    }
+}
+
+fn qt2_nearestDist1 {
+    in QT2d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint2d> contents = qt.getContents(x1, y1, rad);
+
+        double dist2=100;
+        for(APoint2d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2)
+                dist2 = d;
+        }
+
+        dist2 = Math.sqrt(dist2)/rad;
+        if(dist2 > 1)
+            return new LDouble(0);
+        return new LDouble(dist2);
+    }
+}
+
+fn qt2_nearestDist_progress {
+    in QT2d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint2d> contents = qt.getContents(x1, y1, rad);
+
+        double dist2=100;
+        double progress = 0;
+        for(APoint2d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2) {
+                dist2 = d;
+                progress = point.index;
+            }
+        }
+
+        dist2 = Math.sqrt(dist2)/rad;
+        if(dist2 > 1)
+            return new LDouble(0);
+        return new LDouble((1 - dist2)*progress);
+    }
+}
+
+fn qt2_geometric {
+    in QT2d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint2d> contents = qt.getContents(x1, y1, rad);
+
+        double dist2=100;
+        for(APoint2d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2)
+                dist2 = d;
+        }
+        
+        dist2 = Math.sqrt(dist2)/rad;
+        if(dist2 > 1)
+            return new LDouble(0);
+        return new LDouble(1);
+    }
+}
+
+fn qt2_geometric_progress {
+    in QT2d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint2d> contents = qt.getContents(x1, y1, rad);
+
+        double dist2=100;
+        double progress = 0;
+        for(APoint2d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2) {
+                dist2 = d;
+                progress = point.index;
+            }
+        }
+        
+        dist2 = Math.sqrt(dist2)/rad;
+        if(dist2 > 1)
+            return new LDouble(0);
+        return new LDouble(progress);
+    }
+}
+
+fn qt2_nearestVect {
+    in QT2d qt;
+    in LVect2d x;
+    fout LVect2d;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint2d> contents = qt.getContents(x1, y1, rad);
+
+        double dist2=100;
+        double dx = 0;
+        double dy = 0;
+        for(APoint2d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2) {
+                dist2 = d;
+                dx = point.x - x1;
+                dy = point.y - x1;
+            }
+        }
+        
+        dist2 = Math.sqrt(dist2)/rad;
+        if(dist2 > 1)
+            return new LVect2d(0,0);
+        return new LVect2d(dx,dy);
+    }
+}
+
+fn qt2_depth {
+    in QT2d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    eval {
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        return new LDouble((double)qt.getDepth(x1,y1) / qt.getMaxDepth());
+    }
+}
+
+// ***********************
+// *** Quadtree results 3d
+// ***********************
+
+fn qt3_density {
+    in QT3d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint3d> contents = qt.getContents(x1, y1, rad);
+        int ok = 0;
+        for(APoint3d point : contents) {
+            if(point.distanceSquared(x1, y1) < rad*rad)
+                ok++;
+        }
+
+        return new LDouble((double)ok/qt.getMaxDensity());
+    }
+}
+
+fn qt3_density1 {
+    in QT3d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint3d> contents = qt.getContents(x1, y1, rad);
+        int ok = 0;
+
+        double dist2=100;
+        for(APoint3d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2)
+                dist2 = d;
+            if(point.distanceSquared(x1, y1) < rad*rad)
+                ok++;
+        }
+
+        dist2 = Math.sqrt(dist2)/rad;
+        return new LDouble((double)ok*(1 - dist2)/qt.getMaxDensity());
+    }
+}
+
+fn qt3_nearestDist {
+    in QT3d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint3d> contents = qt.getContents(x1, y1, rad);
+
+        double dist2=100;
+        for(APoint3d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2)
+                dist2 = d;
+        }
+
+        
+        dist2 = Math.sqrt(dist2)/rad;
+        if(dist2 > 1)
+            return new LDouble(0);
+        return new LDouble(1 - dist2);
+    }
+}
+
+fn qt3_nearestDist1 {
+    in QT3d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint3d> contents = qt.getContents(x1, y1, rad);
+
+        double dist2=100;
+        for(APoint3d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2)
+                dist2 = d;
+        }
+
+        
+        dist2 = Math.sqrt(dist2)/rad;
+        if(dist2 > 1)
+            return new LDouble(0);
+        return new LDouble(dist2);
+    }
+}
+
+fn qt3_geometric_3Return {
+    in QT3d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint3d> contents = qt.getContents(x1, y1, rad);
+
+        double dist2=100;
+        double zval = 0;
+        for(APoint3d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2) {
+                dist2 = d;
+                zval = point.z;
+            }
+        }
+
+        dist2 = Math.sqrt(dist2)/rad;
+        if(dist2 > 1)
+            return new LDouble(0);
+        return new LDouble(zval);
+    }
+}
+
+fn qt3_nearestDist_3Return {
+    in QT3d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint3d> contents = qt.getContents(x1, y1, rad);
+
+        double dist2=100;
+        double zval = 0;
+        for(APoint3d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2) {
+                dist2 = d;
+                zval = point.z;
+            }
+        }
+
+        dist2 = Math.sqrt(dist2)/rad;
+        if(dist2 > 1)
+            return new LDouble(0);
+        return new LDouble(dist2*zval);
+    }
+}
+
+fn qt3_nearestVect {
+    in QT3d qt;
+    in LVect2d x;
+    fout LVect2d;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint3d> contents = qt.getContents(x1, y1, rad);
+
+        double dist2=100;
+        double dx = 0;
+        double dy = 0;
+        double zval = 0;
+        for(APoint3d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2) {
+                dist2 = d;
+                dx = point.x - x1;
+                dy = point.y - x1;
+                zval = point.z;
+            }
+        }
+        
+        dist2 = Math.sqrt(dist2)/rad;
+        if(dist2 > 1)
+            return new LVect2d(0,0);
+        return new LVect2d(dx*zval,dy*zval);
+    }
+}
+
+fn qt3_nearestVect_3Return {
+    in QT3d qt;
+    in LVect2d x;
+    fout LVect2d;
+
+    parameter double radius;
+
+    init {
+        radius = Math.random()+.02;
+    }
+
+    eval {
+        double rad = qt.getRadiusEstimate() * radius;
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        List<APoint3d> contents = qt.getContents(x1, y1, rad);
+
+        double dist2=100;
+        double dx = 0;
+        double dy = 0;
+        for(APoint3d point : contents) {
+            double d = point.distanceSquared(x1, y1);
+            if(d < dist2) {
+                dist2 = d;
+                dx = point.x - x.x;
+                dy = point.y - x.y;
+            }
+        }
+        
+        dist2 = Math.sqrt(dist2)/rad;
+        if(dist2 > 1)
+            return new LVect2d(0,0);
+        return new LVect2d(dx,dy);
+    }
+}
+
+fn qt3_depth {
+    in QT3d qt;
+    in LVect2d x;
+    fout LDouble;
+
+    eval {
+        double x1 = qt.convertXFromUnit(x.x);
+        double y1 = qt.convertYFromUnit(x.y);
+        return new LDouble((double)qt.getDepth(x1,y1) / qt.getMaxDepth());
+    }
+}

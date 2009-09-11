@@ -1,0 +1,263 @@
+
+group CellAutomata;
+
+import utils.cellularautomata.*;
+
+fn type0 {
+    // type 0:
+    // 1d automata, two colors, discrete, random starting, vertical display
+    fout Buffer_d;
+
+    parameter int code;
+    parameter int size;
+
+    local {
+        private transient Buffer_d data;
+
+        private double get(int x, int y) {
+            return data.getValue( (x+data.getXRes())%data.getXRes() ,y).val;
+        }
+
+        private double evaluate1(int row, int pos) {
+
+            double in1 = get(pos-1,row-1);
+            double in2 = get(pos-0,row-1);
+            double in3 = get(pos+1,row-1);
+
+            boolean bin1 = in1 == 1;
+            boolean bin2 = in2 == 1;
+            boolean bin3 = in3 == 1;
+
+            if( bin1 &&  bin2 &&  bin3 && ((code >> 0)&1) == 1)
+                return 1;
+            if(!bin1 &&  bin2 &&  bin3 && ((code >> 1)&1) == 1)
+                return 1;
+            if( bin1 && !bin2 &&  bin3 && ((code >> 2)&1) == 1)
+                return 1;
+            if(!bin1 && !bin2 &&  bin3 && ((code >> 3)&1) == 1)
+                return 1;
+
+            if( bin1 &&  bin2 && !bin3 && ((code >> 4)&1) == 1)
+                return 1;
+            if(!bin1 &&  bin2 && !bin3 && ((code >> 5)&1) == 1)
+                return 1;
+            if( bin1 && !bin2 && !bin3 && ((code >> 6)&1) == 1)
+                return 1;
+            if(!bin1 && !bin2 && !bin3 && ((code >> 7)&1) == 1)
+                return 1;
+
+            return 0;
+        }
+    }
+
+    setup {
+        if(data != null || !parametersChanged())
+            return;
+
+        Random rand = new Random();
+
+        if(data == null) {
+            if(size==0) {
+                size = 50 + rand.nextInt(200);
+                code = rand.nextInt(256);
+            }
+        }
+
+        data = new Buffer_d(size,size);
+        setParametersChanged(false);
+
+        //data.setValue(data.getXRes()/2,0,new LDouble(1));
+        for(int x=0;x<data.getXRes();x++)
+            data.setValue(x,0, new LDouble( rand.nextInt(2) ));
+
+        for(int y=1;y<data.getYRes();y++)
+        for(int x=0;x<data.getXRes();x++)
+            data.setValue(x,y, new LDouble(evaluate1(y,x)));
+    }
+
+    eval {
+        return data;
+    }
+
+    estimate {
+        return new Estimate_param(null);
+    }
+}
+
+fn type1 {
+    // type 1, generalized
+    // 1d automata, variable colors, discrete, random starting, vertical display
+
+    fout Buffer_d;
+
+    parameter CellularAutomata1d ca;
+    parameter int size;
+
+    local {
+        private int tempColors;
+        private int tempInputs;
+        private transient Buffer_d data;
+    }
+
+    init {
+        Random rand = new Random();
+        tempColors = 2+rand.nextInt(4);
+        tempInputs = 2+rand.nextInt(4);
+        size = 10 + rand.nextInt(300);
+    }
+
+    setup {
+        if(data != null)
+            return;
+
+        data = new Buffer_d(size,size);
+
+        if(ca == null)
+            ca = new CellularAutomata1d(data,tempInputs,tempColors);
+        else {
+            ca.data = data;
+            ca.fill();
+        }
+    }
+
+    eval {
+        return data;
+    }
+
+    estimate {
+        return new Estimate_param(null);
+    }
+}
+
+fn type1_2 {
+    // type 1, generalized
+    // 1d automata, two layer, variable colors, discrete, random starting, vertical display
+
+    fout Buffer_d;
+
+    parameter CellularAutomata1d2 ca;
+    parameter int size;
+
+    local {
+        private int tempColors;
+        private int tempInputs;
+        private transient Buffer_d data;
+    }
+
+    init {
+        Random rand = new Random();
+        tempColors = 2+rand.nextInt(3);
+        tempInputs = 2+rand.nextInt(4);
+        size = 10 + rand.nextInt(300);
+    }
+
+    setup {
+        if(data != null)
+            return;
+
+        data = new Buffer_d(size,size);
+
+        if(ca == null)
+            ca = new CellularAutomata1d2(data,tempInputs,tempColors);
+        else {
+            ca.data = data;
+            ca.fill();
+        }
+    }
+
+    eval {
+        return data;
+    }
+
+    estimate {
+        return new Estimate_param(null);
+    }
+}
+
+fn type2 {
+    // type 2
+    // 1d automata, continuous, random starting, vertical display
+
+    fout Buffer_d;
+
+    parameter CellularAutomata1d_cont ca;
+    parameter int size;
+
+    local {
+        private int tempInputs;
+        private transient Buffer_d data;
+    }
+
+    init {
+        Random rand = new Random();
+        tempInputs = 2+rand.nextInt(5);
+        size = 10 + rand.nextInt(300);
+    }
+
+    setup {
+        if(data != null)
+            return;
+
+        data = new Buffer_d(size,size);
+
+        if(ca == null)
+            ca = new CellularAutomata1d_cont(data,tempInputs);
+        else {
+            ca.data = data;
+            ca.fill();
+        }
+    }
+
+    eval {
+        return data;
+    }
+
+    estimate {
+        return new Estimate_param(null);
+    }
+}
+
+fn type2_2 {
+    // type 2
+    // 1d automata, two row, continuous, random starting, vertical display
+
+    fout Buffer_d;
+
+
+    parameter CellularAutomata1d2_cont ca;
+    parameter int size;
+
+    local {
+        private int tempInputs;
+        private transient Buffer_d data;
+    }
+
+    init {
+        Random rand = new Random();
+        tempInputs = 2+rand.nextInt(5);
+        size = 10 + rand.nextInt(300);
+    }
+
+    setup {
+        if(data != null)
+            return;
+
+        data = new Buffer_d(size,size);
+
+        if(ca == null)
+            ca = new CellularAutomata1d2_cont(data,tempInputs);
+        else {
+            ca.data = data;
+            ca.fill();
+        }
+    }
+
+
+    eval {
+        return data;
+    }
+
+    estimate {
+        return new Estimate_param(null);
+    }
+}

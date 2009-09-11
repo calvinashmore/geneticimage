@@ -1,0 +1,161 @@
+
+group Geometric;
+
+fn circle {
+    in LVect2d v;
+    fout LDouble;
+
+    parameter double radius;
+    parameter LVect2d center;
+
+    init {
+        Random rand = new Random();
+        radius = .8*rand.nextDouble()+.2;
+        center = new LVect2d();
+        center.x = 2*rand.nextDouble()-1;
+        center.y = 2*rand.nextDouble()-1;
+    }
+
+    eval {
+        if(center.sub(v).magnitude() < radius)
+            return new LDouble(1);
+        else return new LDouble(0);
+    }
+
+    estimate {
+        return new Estimate_d(0,1);
+    }
+}
+
+fn circle_hole {
+    in LVect2d v;
+    fout LDouble;
+
+    parameter double radius;
+    parameter double innerRadius;
+    parameter LVect2d center;
+
+    init {
+        Random rand = new Random();
+        radius = .8*rand.nextDouble()+.2;
+        innerRadius = rand.nextDouble()*radius;
+        center = new LVect2d();
+        center.x = 2*rand.nextDouble()-1;
+        center.y = 2*rand.nextDouble()-1;
+    }
+
+    eval {
+        double r = center.sub(v).magnitude();
+        if(r < radius && r > innerRadius)
+            return new LDouble(1);
+        else return new LDouble(0);
+    }
+
+    estimate {
+        return new Estimate_d(0,1);
+    }
+}
+
+fn square {
+    in LVect2d v;
+    fout LDouble;
+
+    parameter double radius;
+    parameter double tilt;
+    parameter LVect2d center;
+
+    init {
+        Random rand = new Random();
+        radius = .8*rand.nextDouble()+.2;
+        tilt = rand.nextDouble()*Math.PI;
+        center = new LVect2d();
+        center.x = 2*rand.nextDouble()-1;
+        center.y = 2*rand.nextDouble()-1;
+    }
+
+    eval {
+        LVect2d u = center.sub(v);
+
+        double r = Math.max(
+            Math.abs( Math.cos(tilt)*u.x + Math.sin(tilt)*u.y ),
+            Math.abs( Math.cos(tilt)*u.y - Math.sin(tilt)*u.x )
+            );
+        
+        if(r < radius)
+            return new LDouble(1);
+        else return new LDouble(0);
+    }
+
+    estimate {
+        return new Estimate_d(0,1);
+    }
+}
+
+fn square_hole {
+    in LVect2d v;
+    fout LDouble;
+
+    parameter double radius;
+    parameter double innerRadius;
+    parameter double tilt;
+    parameter LVect2d center;
+
+    init {
+        Random rand = new Random();
+        radius = .8*rand.nextDouble()+.2;
+        innerRadius = rand.nextDouble()*radius;
+        tilt = rand.nextDouble()*Math.PI;
+        center = new LVect2d();
+        center.x = 2*rand.nextDouble()-1;
+        center.y = 2*rand.nextDouble()-1;
+    }
+
+    eval {
+        LVect2d u = center.sub(v);
+
+        double r = Math.max(
+            Math.abs( Math.cos(tilt)*u.x + Math.sin(tilt)*u.y ),
+            Math.abs( Math.cos(tilt)*u.y - Math.sin(tilt)*u.x )
+            );
+        
+        if(r < radius && r > innerRadius)
+            return new LDouble(1);
+        else return new LDouble(0);
+    }
+
+    estimate {
+        return new Estimate_d(0,1);
+    }
+}
+
+fn bar {
+    in LVect2d v;
+    fout LDouble;
+
+    parameter double radius;
+    parameter double tilt;
+    parameter LVect2d center;
+
+    init {
+        Random rand = new Random();
+        radius = .3*rand.nextDouble();
+        tilt = rand.nextDouble()*Math.PI;
+        center = new LVect2d();
+        center.x = 2*rand.nextDouble()-1;
+        center.y = 2*rand.nextDouble()-1;
+    }
+
+    eval {
+        LVect2d u = center.sub(v);
+
+        double r = Math.abs( Math.cos(tilt)*u.x + Math.sin(tilt)*u.y );
+        
+        if(r < radius)
+            return new LDouble(1);
+        else return new LDouble(0);
+    }
+
+    estimate {
+        return new Estimate_d(0,1);
+    }
+}

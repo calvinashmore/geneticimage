@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+"
+      codebase="file://localhost/d:/Projects/Genetic/GeneticImage2/dist/" >
+    <information>
+        <title>Genetic Image</title>
+        <vendor>Icosilune Software</vendor>
+        <homepage href="http://www.icosilune.com" />
+        <description>Creates images using Genetic Algorithms</description>
+        <icon href="genetic_logo.jpg" kind="splash"/>
+        <icon href="icon.png"/>
+    </information>
+    <offline-allowed/>
+    <!-- <security>
+        <j2ee-application-client-permissions/>
+    </security> -->
+    <resources>
+        <j2se version="1.5+" />
+        <jar href="GeneticImage.jar"/>
+    </resources>
+    <application-desc main-class="geneticimage.Main" />
+</jnlp>

@@ -1,0 +1,65 @@
+
+group Imagefn;
+
+/*
+fn Image {
+    fout ColorGrid;
+    parameter int id;
+
+    init {
+        ImageManager imageManager = ImageManager.getImageManager();
+        if(imageManager != null)
+            id = (new java.util.Random()).nextInt(imageManager.getNumberImages());
+        else id = -1;
+    }
+
+    eval { 
+        ImageManager imageManager = ImageManager.getImageManager();
+        return imageManager.getImage(id);
+    }
+
+    estimate { return new Estimate_param(null); }
+}
+
+fn SampleImage {
+    in LVect2d pos;
+    in ColorGrid image;
+    in GridScaleMethod scale;
+    in GridWrapMethod xwrap;
+    in GridWrapMethod ywrap;
+    fout Color;
+
+    eval {
+        int xres = image.getXRes();
+        return image.evalScale(xres*pos.x, xres*pos.y, xwrap, ywrap, scale);
+    }
+
+    estimate { return new Estimate_col(); }
+}*/
+
+fn ScaleMethod {
+    fout GridScaleMethod;
+    parameter GridScaleMethod scaleMethod;
+
+    init {
+        GridScaleMethod meths[] = GridScaleMethod.values();
+        scaleMethod = meths[(new java.util.Random()).nextInt(meths.length)];
+    }
+
+    eval { return scaleMethod; }
+    estimate { return new Estimate_param(scaleMethod); }
+}
+
+fn WrapMethod {
+    fout GridWrapMethod;
+    parameter GridWrapMethod wrapMethod;
+
+    init {
+        GridWrapMethod meths[] = GridWrapMethod.values();
+        wrapMethod = meths[(new java.util.Random()).nextInt(meths.length)];
+    }
+
+    eval { return wrapMethod; }
+    estimate { return new Estimate_param(wrapMethod); }
+}
+

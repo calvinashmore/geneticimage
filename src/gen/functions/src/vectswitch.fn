@@ -1,0 +1,323 @@
+
+group VectSwitch;
+
+fn C_v2 {
+    in Complex x;
+    fout LVect2d;
+
+    eval {
+        return new LVect2d(x.x,x.y);
+    }
+
+    estimate {
+        return new Estimate_v2(
+            x.getXMinimum(), x.getXMaximum(),
+            x.getYMinimum(), x.getYMaximum()
+            );
+    }
+}
+
+fn C_x {
+    in Complex x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.x);
+    }
+
+    estimate {
+        return new Estimate_d(
+            x.getXMinimum(), x.getXMaximum()
+            );
+    }
+}
+
+fn C_y {
+    in Complex x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.y);
+    }
+
+    estimate {
+        return new Estimate_d(
+            x.getYMinimum(), x.getYMaximum()
+            );
+    }
+}
+
+fn V2_c {
+    in LVect2d x;
+    fout Complex;
+
+    eval {
+        return new Complex(x.x,x.y);
+    }
+
+    estimate {
+        return new Estimate_c(
+            x.getXMinimum(), x.getXMaximum(),
+            x.getYMinimum(), x.getYMaximum()
+            );
+    }
+}
+
+fn V2_x {
+    in LVect2d x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.x);
+    }
+
+    estimate {
+        return new Estimate_d(
+            x.getXMinimum(), x.getXMaximum()
+            );
+    }
+}
+
+fn V2_y {
+    in LVect2d x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.y);
+    }
+
+    estimate {
+        return new Estimate_d(
+            x.getYMinimum(), x.getYMaximum()
+            );
+    }
+}
+
+fn V2_swap {
+    in LVect2d x;
+    fout LVect2d;
+
+    eval {
+        return new LVect2d(x.y,x.x);
+    }
+
+    estimate {
+        return new Estimate_v2(x.getYMinimum(), x.getYMaximum(), x.getXMinimum(), x.getXMaximum());
+    }
+}
+
+fn V2_to_magTheta {
+    in LVect2d x;
+    fout LVect2d;
+
+    eval {
+        double r = Math.sqrt(x.x*x.x + x.y*x.y);
+        double theta = Math.atan2(x.y, x.x);
+        
+        return new LVect2d(r,theta);
+    }
+
+    estimate {
+        if(x.isConstant()) {
+            
+            double xx = x.getXMaximum();
+            double xy = x.getYMaximum();
+            
+            double r = Math.sqrt(xx*xx + xy*xy);
+            double theta = Math.atan2(xy, xx);
+
+            return new Estimate_v2(r,r,theta,theta);
+        }
+        
+        return new Estimate_v2(
+                x.getMinMagnitude(), x.getMaxMagnitude(),
+                -Math.PI, Math.PI
+                );
+    }
+}
+
+fn MagTheta_to_v2 {
+    in LVect2d x;
+    fout LVect2d;
+
+    eval {
+        return new LVect2d(x.x*Math.cos(x.y), x.x*Math.sin(x.y));
+    }
+
+    estimate {
+        if(x.isConstant()) {
+            
+            double r = x.getXMaximum();
+            double t = x.getYMaximum();
+            
+            double xx = r*Math.cos(t);
+            double xy = r*Math.sin(t);
+
+            return new Estimate_v2(xx,xx,xy,xy);
+        }
+        
+        // this can probably be constrained more,
+        // but for now, this will do
+        return new Estimate_v2(
+                x.getXMinimum(), x.getXMaximum(),
+                x.getXMinimum(), x.getXMaximum()
+                );
+    }
+}
+
+fn Color_r {
+    in Color x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.r);
+    }
+
+    estimate {
+        return new Estimate_d(
+            x.getRMinimum(), x.getRMaximum()
+            );
+    }
+}
+
+fn Color_g {
+    in Color x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.g);
+    }
+
+    estimate {
+        return new Estimate_d(
+            x.getGMinimum(), x.getGMaximum()
+            );
+    }
+}
+
+fn Color_b {
+    in Color x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.b);
+    }
+
+    estimate {
+        return new Estimate_d(
+            x.getBMinimum(), x.getBMaximum()
+            );
+    }
+}
+
+fn Color_hue {
+    in Color x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.hsbvals()[0]);
+    }
+}
+
+fn Color_saturation {
+    in Color x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.hsbvals()[1]);
+    }
+}
+
+fn Color_brightness {
+    in Color x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.hsbvals()[2]);
+    }
+}
+
+fn New_c {
+    in LDouble x;
+    in LDouble y;
+    fout Complex;
+
+    eval {
+        return new Complex(x.val, y.val);
+    }
+
+    estimate {
+        return new Estimate_c(x.getMinimum(), x.getMaximum(), y.getMinimum(), y.getMaximum());
+    }
+}
+
+fn New_v2 {
+    in LDouble x;
+    in LDouble y;
+    fout LVect2d;
+
+    eval {
+        return new LVect2d(x.val, y.val);
+    }
+
+    estimate {
+        return new Estimate_v2(x.getMinimum(), x.getMaximum(), y.getMinimum(), y.getMaximum());
+    }
+}
+
+fn New_v3 {
+    in LDouble x;
+    in LDouble y;
+    in LDouble z;
+    fout LVect3d;
+
+    eval {
+        return new LVect3d(x.val, y.val, z.val);
+    }
+
+    estimate {
+        return new Estimate_v3(x.getMinimum(), x.getMaximum(), y.getMinimum(), y.getMaximum(), z.getMinimum(), z.getMaximum());
+    }
+}
+
+fn New_dv2_v3 {
+    in LDouble x;
+    in LVect2d yz;
+    fout LVect3d;
+
+    eval {
+        return new LVect3d(x.val, yz.x, yz.y);
+    }
+
+    estimate {
+        return new Estimate_v3(x.getMinimum(), x.getMaximum(), yz.getXMinimum(), yz.getXMaximum(), yz.getYMinimum(), yz.getYMaximum());
+    }
+}
+
+fn New_v2d_v3 {
+    in LVect2d xy;
+    in LDouble z;
+    fout LVect3d;
+
+    eval {
+        return new LVect3d(xy.x, xy.y, z.val);
+    }
+
+    estimate {
+        return new Estimate_v3(xy.getXMinimum(), xy.getXMaximum(), xy.getYMinimum(), xy.getYMaximum(), z.getMinimum(), z.getMaximum());
+    }
+}
+
+fn New_vdv_v3 {
+    in LVect2d xz;
+    in LDouble y;
+    fout LVect3d;
+
+    eval {
+        return new LVect3d(xz.x, y.val, xz.y);
+    }
+
+    estimate {
+        return new Estimate_v3(xz.getXMinimum(), xz.getXMaximum(), y.getMinimum(), y.getMaximum(), xz.getYMinimum(), xz.getYMaximum());
+    }
+}

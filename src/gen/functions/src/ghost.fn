@@ -1,0 +1,302 @@
+
+group Ghost;
+
+fn d {
+
+    necessaryContext {"x","y"}
+
+    parameter int ghosts;
+    parameter double[] a;
+    parameter double[] b;
+    parameter double[] c;
+    parameter double[] d;
+    parameter double[] e;
+    parameter double[] f;
+
+    init {
+        Random myRand = new Random();
+        ghosts = 2 + myRand.nextInt(3);
+        a = new double[ghosts];
+        b = new double[ghosts];
+        c = new double[ghosts];
+        d = new double[ghosts];
+        e = new double[ghosts];
+        f = new double[ghosts];
+        
+        for(int i=0;i<ghosts;i++) {
+        
+            a[i] = 2*myRand.nextDouble()-1;
+            b[i] = 2*myRand.nextDouble()-1;
+            c[i] = 2*myRand.nextDouble()-1;
+            d[i] = 2*myRand.nextDouble()-1;
+            
+            e[i] = 10*myRand.nextDouble()-5;
+            f[i] = 10*myRand.nextDouble()-5;
+        }
+    }
+
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+    in LVect2d v;
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LDouble r = new LDouble();
+
+        for(int i=0;i<ghosts;i++) {
+            x.setContext(new ContextXY(
+                    a[i] * x1 + b[i] * y1 + e[i],
+                    c[i] * x1 + d[i] * y1 + f[i]
+                    ));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0/ghosts);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v2 {
+
+    necessaryContext {"x","y"}
+
+    parameter int ghosts;
+    parameter double[] a;
+    parameter double[] b;
+    parameter double[] c;
+    parameter double[] d;
+    parameter double[] e;
+    parameter double[] f;
+
+    init {
+        Random myRand = new Random();
+        ghosts = 2 + myRand.nextInt(3);
+        a = new double[ghosts];
+        b = new double[ghosts];
+        c = new double[ghosts];
+        d = new double[ghosts];
+        e = new double[ghosts];
+        f = new double[ghosts];
+        
+        for(int i=0;i<ghosts;i++) {
+        
+            a[i] = 2*myRand.nextDouble()-1;
+            b[i] = 2*myRand.nextDouble()-1;
+            c[i] = 2*myRand.nextDouble()-1;
+            d[i] = 2*myRand.nextDouble()-1;
+            
+            e[i] = 10*myRand.nextDouble()-5;
+            f[i] = 10*myRand.nextDouble()-5;
+        }
+    }
+
+    nbin LVect2d x(ContextXY);
+    fout LVect2d;
+    in LVect2d v;
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect2d r = new LVect2d();
+
+        for(int i=0;i<ghosts;i++) {
+            x.setContext(new ContextXY(
+                    a[i] * x1 + b[i] * y1 + e[i],
+                    c[i] * x1 + d[i] * y1 + f[i]
+                    ));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0/ghosts);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v3 {
+
+    necessaryContext {"x","y"}
+
+    parameter int ghosts;
+    parameter double[] a;
+    parameter double[] b;
+    parameter double[] c;
+    parameter double[] d;
+    parameter double[] e;
+    parameter double[] f;
+
+    init {
+        Random myRand = new Random();
+        ghosts = 2 + myRand.nextInt(3);
+        a = new double[ghosts];
+        b = new double[ghosts];
+        c = new double[ghosts];
+        d = new double[ghosts];
+        e = new double[ghosts];
+        f = new double[ghosts];
+        
+        for(int i=0;i<ghosts;i++) {
+        
+            a[i] = 2*myRand.nextDouble()-1;
+            b[i] = 2*myRand.nextDouble()-1;
+            c[i] = 2*myRand.nextDouble()-1;
+            d[i] = 2*myRand.nextDouble()-1;
+            
+            e[i] = 10*myRand.nextDouble()-5;
+            f[i] = 10*myRand.nextDouble()-5;
+        }
+    }
+
+    nbin LVect3d x(ContextXY);
+    fout LVect3d;
+    in LVect2d v;
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect3d r = new LVect3d();
+
+        for(int i=0;i<ghosts;i++) {
+            x.setContext(new ContextXY(
+                    a[i] * x1 + b[i] * y1 + e[i],
+                    c[i] * x1 + d[i] * y1 + f[i]
+                    ));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0/ghosts);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn col {
+
+    necessaryContext {"x","y"}
+
+    parameter int ghosts;
+    parameter double[] a;
+    parameter double[] b;
+    parameter double[] c;
+    parameter double[] d;
+    parameter double[] e;
+    parameter double[] f;
+
+    init {
+        Random myRand = new Random();
+        ghosts = 2 + myRand.nextInt(3);
+        a = new double[ghosts];
+        b = new double[ghosts];
+        c = new double[ghosts];
+        d = new double[ghosts];
+        e = new double[ghosts];
+        f = new double[ghosts];
+        
+        for(int i=0;i<ghosts;i++) {
+        
+            a[i] = 2*myRand.nextDouble()-1;
+            b[i] = 2*myRand.nextDouble()-1;
+            c[i] = 2*myRand.nextDouble()-1;
+            d[i] = 2*myRand.nextDouble()-1;
+            
+            e[i] = 10*myRand.nextDouble()-5;
+            f[i] = 10*myRand.nextDouble()-5;
+        }
+    }
+
+    nbin Color x(ContextXY);
+    fout Color;
+    in LVect2d v;
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Color r = new Color();
+
+        for(int i=0;i<ghosts;i++) {
+            x.setContext(new ContextXY(
+                    a[i] * x1 + b[i] * y1 + e[i],
+                    c[i] * x1 + d[i] * y1 + f[i]
+                    ));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0/ghosts);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn c {
+
+    necessaryContext {"x","y"}
+
+    parameter int ghosts;
+    parameter double[] a;
+    parameter double[] b;
+    parameter double[] c;
+    parameter double[] d;
+    parameter double[] e;
+    parameter double[] f;
+
+    init {
+        Random myRand = new Random();
+        ghosts = 2 + myRand.nextInt(3);
+        a = new double[ghosts];
+        b = new double[ghosts];
+        c = new double[ghosts];
+        d = new double[ghosts];
+        e = new double[ghosts];
+        f = new double[ghosts];
+        
+        for(int i=0;i<ghosts;i++) {
+        
+            a[i] = 2*myRand.nextDouble()-1;
+            b[i] = 2*myRand.nextDouble()-1;
+            c[i] = 2*myRand.nextDouble()-1;
+            d[i] = 2*myRand.nextDouble()-1;
+            
+            e[i] = 10*myRand.nextDouble()-5;
+            f[i] = 10*myRand.nextDouble()-5;
+        }
+    }
+
+    nbin Complex x(ContextXY);
+    fout Complex;
+    in LVect2d v;
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Complex r = new Complex();
+
+        for(int i=0;i<ghosts;i++) {
+            x.setContext(new ContextXY(
+                    a[i] * x1 + b[i] * y1 + e[i],
+                    c[i] * x1 + d[i] * y1 + f[i]
+                    ));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0/ghosts);
+    }
+
+    estimate {
+        return x;
+    }
+}

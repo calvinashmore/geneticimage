@@ -1,0 +1,506 @@
+
+group Cell;
+
+// **************
+// *** EVALUATORS
+// **************
+
+fn Cell_v3 {
+    in CellularParams cp;
+    in CellularDistance cd;
+    in LVect3d pos;
+    fout CellularResult;
+
+    eval {
+        Cellular cell = new Cellular(cp,cd);
+        return cell.evaluate(pos);
+    }
+
+    /*
+    estimate {
+
+        if(pos.isConstant()) {
+            // if the input is constant, return the constant parameter
+            
+            Cellular cell = new Cellular((CellularParams)cp.getValue(),(CellularDistance)cd.getValue());
+            return new Estimate_param(cell.evaluate(pos.getCValue()));
+        }
+        else
+            // otherwise, this is kind of cheating, but the CellularParams are what we really need.
+            return new Estimate_param(cp.getValue());
+    }*/
+}
+
+fn Cell_v2 {
+    in CellularParams cp;
+    in CellularDistance cd;
+    in LVect2d pos;
+    fout CellularResult;
+
+    eval {
+        Cellular cell = new Cellular(cp,cd);
+        return cell.evaluate( new LVect3d(pos.x,pos.y,0) );
+    }
+
+    /*
+    estimate {
+
+        if(pos.isConstant()) {
+            // if the input is constant, return the constant parameter
+            
+            Cellular cell = new Cellular((CellularParams)cp.getValue(),(CellularDistance)cd.getValue());
+            LVect2d pos1 = pos.getCValue();
+            return new Estimate_param(cell.evaluate( new LVect3d(pos1.x,pos1.y,0) ));
+        }
+        else
+            // otherwise, this is kind of cheating, but the CellularParams are what we really need.
+            return new Estimate_param(cp.getValue());
+    }
+    */
+}
+
+// ************
+// *** DISTANCE
+// ************
+
+fn CellDistanceEuclidean {
+    fout CellularDistance;
+    local{ private CellularDistance dist; }
+
+    init { dist = CellularDistance.getEuclidean(); }
+    eval { return dist; }
+    estimate { return new Estimate_param(dist); }
+}
+
+fn CellDistanceManhattan {
+    fout CellularDistance;
+    local{ private CellularDistance dist; }
+
+    init { dist = CellularDistance.getManhattan(); }
+    eval { return dist; }
+    estimate { return new Estimate_param(dist); }
+}
+
+fn CellDistanceEuclideanStretched {
+    fout CellularDistance;
+    local{ private CellularDistance dist; }
+    parameter double stretchx;
+    parameter double stretchy;
+    parameter double stretchz;
+
+    init {
+        stretchx = 3*Math.random();
+        stretchy = 3*Math.random();
+        stretchz = 3*Math.random();
+        dist = CellularDistance.getEuclidean();
+    }
+    setup {
+        dist = CellularDistance.getEuclideanStretched(stretchx, stretchy, stretchz);
+    }
+    eval { return dist; }
+    estimate { return new Estimate_param(dist); }
+}
+
+fn CellDistanceHyperQuadratic {
+    fout CellularDistance;
+    local{ private CellularDistance dist; }
+    parameter double xpow;
+    parameter double ypow;
+    parameter double zpow;
+
+    init {
+        xpow = 3*Math.random();
+        ypow = 3*Math.random();
+        zpow = 3*Math.random();
+        dist = CellularDistance.getEuclidean();
+    }
+    setup {
+        dist = CellularDistance.getEuclideanStretched(xpow, ypow, zpow);
+    }
+    eval { return dist; }
+    estimate { return new Estimate_param(dist); }
+}
+
+// **************
+// *** PARAMETERS
+// **************
+
+fn CellParameters {
+    fout CellularParams;
+    local { private CellularParams cp; }
+
+    parameter int max_order;
+    parameter LVect3d translate;
+    parameter double scale;
+
+    init {
+        translate = new LVect3d();
+        translate.x = Math.random()*100 - 50;
+        translate.y = Math.random()*100 - 50;
+        translate.z = Math.random()*100 - 50;
+        
+        scale = Math.random()*5 + 5;
+        
+        max_order = 4 + new Random().nextInt(3);
+    }
+
+    setup {
+        cp = new CellularParams();
+        cp.translate = translate;
+        cp.scale.x = scale;
+        cp.scale.y = scale;
+        cp.scale.z = scale;
+        cp.max_order = max_order;
+    }
+
+    eval { return cp; }
+    estimate { return new Estimate_param(cp); }
+}
+
+// ***********
+// *** RESULTS
+// ***********
+
+fn CellResultDelta {
+
+    in CellularResult cr;
+    fout LVect3d;
+
+    parameter double[] coeff;
+
+    init {
+        coeff = new double[7];
+        for(int i=0; i<7 ;i++)
+            coeff[i] = Math.random()*2-1;
+    }
+    
+    eval {
+        LVect3d r = new LVect3d();
+        for(int i=0; i<7 ;i++)
+            r.addv( cr.getDelta(i).mult(coeff[i]) );
+        return r;
+    }
+
+    /*estimate {
+        if(cr == null || cr.getValue() == null || !(cr.getValue() instanceof CellularResult)) {
+            return new Estimate_v3();
+        } else {
+            // case where value is constant
+            CellularResult crv = (CellularResult)cr.getValue();
+            LVect3d r = new LVect3d();
+
+            for(int i=0; i<7 ;i++)
+                r.addv( crv.getDelta(i).mult(coeff[i]) );
+            
+            return new Estimate_v3(r,r);
+        }
+    }*/
+}
+
+fn CellResult_c {
+
+    in CellularResult cr;
+    fout Complex;
+
+    parameter double[] coeff_x;
+    parameter double[] coeff_y;
+
+    init {
+        coeff_x = new double[7];
+        coeff_y = new double[7];
+        for(int i=0; i<7 ;i++) {
+            coeff_x[i] = Math.random()*2-1;
+            coeff_y[i] = Math.random()*2-1;
+        }
+    }
+    
+    eval {
+        double r = 0;
+        double p = 0;
+
+        for(int i=0; i<7 ;i++) {
+            r += cr.getF(i) * coeff_x[i];
+            p += cr.getF(i) * coeff_y[i];
+        }
+        
+        return new Complex(r,p);
+    }
+
+    /*estimate {
+        if(cr == null || cr.getValue() == null || !(cr.getValue() instanceof CellularResult)) {
+            
+            // only have estimate
+            double v = 0;
+            double u = 0;
+            
+            for(int i=0;i<7;i++) {
+                v += Math.abs(coeff_x[i]);
+                u += Math.abs(coeff_y[i]);
+            }
+            
+            return new Estimate_c(-v, v, -u, u);
+            
+        } else {
+            // case where value is constant
+            CellularResult crv = (CellularResult)cr.getValue();
+
+            double v = 0;
+            double u = 0;
+            
+            for(int i=0;i<7;i++) {
+                v += crv.getF(i) * coeff_x[i];
+                u += crv.getF(i) * coeff_y[i];
+            }
+            
+            return new Estimate_c(v,v,u,u);
+        }
+    }*/
+}
+
+fn CellResult_col {
+
+    in CellularResult cr;
+    fout Color;
+
+    parameter double[] coeff_x;
+    parameter double[] coeff_y;
+    parameter double[] coeff_z;
+
+    init {
+        coeff_x = new double[7];
+        coeff_y = new double[7];
+        coeff_z = new double[7];
+        for(int i=0; i<7 ;i++) {
+            coeff_x[i] = Math.random()*2-1;
+            coeff_y[i] = Math.random()*2-1;
+            coeff_z[i] = Math.random()*2-1;
+        }
+    }
+    
+    eval {
+        double r = 0;
+        double p = 0;
+        double q = 0;
+
+        for(int i=0; i<7 ;i++) {
+            r += cr.getF(i) * coeff_x[i];
+            p += cr.getF(i) * coeff_y[i];
+            q += cr.getF(i) * coeff_z[i];
+        }
+        
+        return new Color(r,p,q);
+    }
+
+    /*estimate {
+        if(cr == null || cr.getValue() == null || !(cr.getValue() instanceof CellularResult)) {
+            
+            // only have estimate
+            double v = 0;
+            double u = 0;
+            double w = 0;
+            
+            for(int i=0;i<7;i++) {
+                v += Math.abs(coeff_x[i]);
+                u += Math.abs(coeff_y[i]);
+                w += Math.abs(coeff_z[i]);
+            }
+            
+            return new Estimate_col(-v, v, -u, u, -w, w);
+            
+        } else {
+            // case where value is constant
+            CellularResult crv = (CellularResult)cr.getValue();
+
+            double v = 0;
+            double u = 0;
+            double w = 0;
+            
+            for(int i=0;i<7;i++) {
+                v += crv.getF(i) * coeff_x[i];
+                u += crv.getF(i) * coeff_y[i];
+                w += crv.getF(i) * coeff_z[i];
+            }
+            
+            return new Estimate_col(v,v,u,u,w,w);
+        }
+    }*/
+}
+fn CellResult_d {
+
+    in CellularResult cr;
+    fout LDouble;
+
+    parameter double[] coeff_x;
+
+    init {
+        coeff_x = new double[7];
+        for(int i=0; i<7 ;i++) {
+            coeff_x[i] = Math.random()*2-1;
+        }
+    }
+    
+    eval {
+        double r = 0;
+
+        for(int i=0; i<7 ;i++) {
+            r += cr.getF(i) * coeff_x[i];
+        }
+        
+        return new LDouble(r);
+    }
+
+    /*estimate {
+        if(cr == null || cr.getValue() == null || !(cr.getValue() instanceof CellularResult)) {
+            
+            // only have estimate
+            double v = 0;
+            
+            for(int i=0;i<7;i++) {
+                v += Math.abs(coeff_x[i]);
+            }
+            
+            return new Estimate_d(-v, v);
+            
+        } else {
+            // case where value is constant
+            CellularResult crv = (CellularResult)cr.getValue();
+
+            double v = 0;
+            
+            for(int i=0;i<7;i++) {
+                v += crv.getF(i) * coeff_x[i];
+            }
+            
+            return new Estimate_d(v,v);
+        }
+    }*/
+}
+
+fn CellResult_v2 {
+
+    in CellularResult cr;
+    fout LVect2d;
+
+    parameter double[] coeff_x;
+    parameter double[] coeff_y;
+
+    init {
+        coeff_x = new double[7];
+        coeff_y = new double[7];
+        for(int i=0; i<7 ;i++) {
+            coeff_x[i] = Math.random()*2-1;
+            coeff_y[i] = Math.random()*2-1;
+        }
+    }
+    
+    eval {
+        double r = 0;
+        double p = 0;
+
+        for(int i=0; i<7 ;i++) {
+            r += cr.getF(i) * coeff_x[i];
+            p += cr.getF(i) * coeff_y[i];
+        }
+        
+        return new LVect2d(r,p);
+    }
+
+    /*estimate {
+        if(cr == null || cr.getValue() == null || !(cr.getValue() instanceof CellularResult)) {
+            
+            // only have estimate
+            double v = 0;
+            double u = 0;
+            
+            for(int i=0;i<7;i++) {
+                v += Math.abs(coeff_x[i]);
+                u += Math.abs(coeff_y[i]);
+            }
+            
+            return new Estimate_v2(-v, v, -u, u);
+            
+        } else {
+            // case where value is constant
+            CellularResult crv = (CellularResult)cr.getValue();
+
+            double v = 0;
+            double u = 0;
+            
+            for(int i=0;i<7;i++) {
+                v += crv.getF(i) * coeff_x[i];
+                u += crv.getF(i) * coeff_y[i];
+            }
+            
+            return new Estimate_v2(v,v,u,u);
+        }
+    }*/
+}
+
+fn CellResult_v3 {
+
+    in CellularResult cr;
+    fout LVect3d;
+
+    parameter double[] coeff_x;
+    parameter double[] coeff_y;
+    parameter double[] coeff_z;
+
+    init {
+        coeff_x = new double[7];
+        coeff_y = new double[7];
+        coeff_z = new double[7];
+        for(int i=0; i<7 ;i++) {
+            coeff_x[i] = Math.random()*2-1;
+            coeff_y[i] = Math.random()*2-1;
+            coeff_z[i] = Math.random()*2-1;
+        }
+    }
+    
+    eval {
+        double r = 0;
+        double p = 0;
+        double q = 0;
+
+        for(int i=0; i<7 ;i++) {
+            r += cr.getF(i) * coeff_x[i];
+            p += cr.getF(i) * coeff_y[i];
+            q += cr.getF(i) * coeff_z[i];
+        }
+        
+        return new LVect3d(r,p,q);
+    }
+
+    /*estimate {
+        if(cr == null || cr.getValue() == null || !(cr.getValue() instanceof CellularResult)) {
+            
+            // only have estimate
+            double v = 0;
+            double u = 0;
+            double w = 0;
+            
+            for(int i=0;i<7;i++) {
+                v += Math.abs(coeff_x[i]);
+                u += Math.abs(coeff_y[i]);
+                w += Math.abs(coeff_z[i]);
+            }
+            
+            return new Estimate_v3(-v, v, -u, u, -w, w);
+            
+        } else {
+            // case where value is constant
+            CellularResult crv = (CellularResult)cr.getValue();
+
+            double v = 0;
+            double u = 0;
+            double w = 0;
+            
+            for(int i=0;i<7;i++) {
+                v += crv.getF(i) * coeff_x[i];
+                u += crv.getF(i) * coeff_y[i];
+                w += crv.getF(i) * coeff_z[i];
+            }
+            
+            return new Estimate_v3(v,v,u,u,w,w);
+        }
+    }*/
+}

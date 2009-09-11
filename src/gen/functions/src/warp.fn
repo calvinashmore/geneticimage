@@ -1,0 +1,184 @@
+
+group Warp;
+
+
+// **********
+// *** VWarps
+// **********
+
+fn v3warp {
+
+    necessaryContext {"x","y"}
+
+    parameter double[] a;
+
+    init {
+        Random myRand = new Random();
+        a = new double[6];
+        
+        for(int i=0;i<6;i++)
+            a[i] = 2*myRand.nextDouble()-1;
+    }
+
+    fout LVect3d;
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        return new LVect3d(
+            x1 * a[0] + y1 * a[1],
+            x1 * a[2] + y1 * a[3],
+            x1 * a[4] + y1 * a[5]
+            );
+    }
+
+    estimate {
+        return new Estimate_v3();
+    }
+}
+
+fn v2warp {
+
+    necessaryContext {"x","y"}
+
+    parameter double[] a;
+
+    init {
+        Random myRand = new Random();
+        a = new double[4];
+        
+        for(int i=0;i<4;i++)
+            a[i] = 2*myRand.nextDouble()-1;
+    }
+
+    fout LVect2d;
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        return new LVect2d(
+            x1 * a[0] + y1 * a[1],
+            x1 * a[2] + y1 * a[3]
+            );
+    }
+
+    estimate {
+        return new Estimate_v2();
+    }
+}
+
+fn qwarp {
+
+    necessaryContext {"x","y"}
+
+    parameter double[] a;
+
+    init {
+        Random myRand = new Random();
+        a = new double[8];
+        
+        for(int i=0;i<8;i++)
+            a[i] = 2*myRand.nextDouble()-1;
+    }
+
+    fout Quaternion;
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        return new Quaternion(
+            x1 * a[0] + y1 * a[1],
+            x1 * a[2] + y1 * a[3],
+            x1 * a[4] + y1 * a[5],
+            x1 * a[6] + y1 * a[7]
+            );
+    }
+}
+
+
+// **************
+// *** NFNB Warps
+// **************
+
+fn d {
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+    in LVect2d v;
+
+    necessaryContext {"x","y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        x.setContext(new ContextXY(x1 + v.x, y1 + v.y));
+        return xEval;
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v2 {
+    nbin LVect2d x(ContextXY);
+    fout LVect2d;
+    in LVect2d v;
+
+    necessaryContext {"x","y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        x.setContext(new ContextXY(x1 + v.x, y1 + v.y));
+        return xEval;
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v3 {
+    nbin LVect3d x(ContextXY);
+    fout LVect3d;
+    in LVect2d v;
+
+    necessaryContext {"x","y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        x.setContext(new ContextXY(x1 + v.x, y1 + v.y));
+        return xEval;
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn c{
+    nbin Complex x(ContextXY);
+    fout Complex;
+    in LVect2d v;
+
+    necessaryContext {"x","y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        x.setContext(new ContextXY(x1 + v.x, y1 + v.y));
+        return xEval;
+    }
+
+    estimate {
+        return x;
+    }
+}

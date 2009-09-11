@@ -1,0 +1,275 @@
+
+group Binary;
+
+// ***********
+// *** BITWISE
+// ***********
+
+fn And {
+    in LDouble x;
+    in LDouble y;
+    fout LDouble;
+
+    eval {
+        long xl = Double.doubleToRawLongBits(x.val);
+        long yl = Double.doubleToRawLongBits(y.val);
+        
+        return new LDouble( Double.longBitsToDouble( xl & yl ) );
+    }
+
+    estimate {
+        return new Estimate_d();
+    }
+}
+
+fn And_v2 {
+    in LVect2d x;
+    in LVect2d y;
+    fout LVect2d;
+
+    eval {
+        long xx = Double.doubleToRawLongBits(x.x);
+        long yx = Double.doubleToRawLongBits(y.x);
+        long xy = Double.doubleToRawLongBits(x.y);
+        long yy = Double.doubleToRawLongBits(y.y);
+        
+        return new LVect2d( Double.longBitsToDouble( xx & yx ), Double.longBitsToDouble( xy & yy ) );
+    }
+
+    estimate {
+        return new Estimate_v2();
+    }
+}
+
+fn And_v3 {
+    in LVect3d x;
+    in LVect3d y;
+    fout LVect3d;
+
+    eval {
+        long xx = Double.doubleToRawLongBits(x.x);
+        long yx = Double.doubleToRawLongBits(y.x);
+        long xy = Double.doubleToRawLongBits(x.y);
+        long yy = Double.doubleToRawLongBits(y.y);
+        long xz = Double.doubleToRawLongBits(x.y);
+        long yz = Double.doubleToRawLongBits(y.y);
+        
+        return new LVect3d( Double.longBitsToDouble( xx & yx ), Double.longBitsToDouble( xy & yy ), Double.longBitsToDouble( xz & yz ) );
+    }
+
+    estimate {
+        return new Estimate_v3();
+    }
+}
+
+fn Or {
+    in LDouble x;
+    in LDouble y;
+    fout LDouble;
+
+    eval {
+        long xl = Double.doubleToRawLongBits(x.val);
+        long yl = Double.doubleToRawLongBits(y.val);
+        
+        return new LDouble( Double.longBitsToDouble( xl | yl ) );
+    }
+
+    estimate {
+        return new Estimate_d();
+    }
+}
+
+fn Or_v2 {
+    in LVect2d x;
+    in LVect2d y;
+    fout LVect2d;
+
+    eval {
+        long xx = Double.doubleToRawLongBits(x.x);
+        long yx = Double.doubleToRawLongBits(y.x);
+        long xy = Double.doubleToRawLongBits(x.y);
+        long yy = Double.doubleToRawLongBits(y.y);
+        
+        return new LVect2d( Double.longBitsToDouble( xx | yx ), Double.longBitsToDouble( xy | yy ) );
+    }
+
+    estimate {
+        return new Estimate_v2();
+    }
+}
+
+fn Or_v3 {
+    in LVect3d x;
+    in LVect3d y;
+    fout LVect3d;
+
+    eval {
+        long xx = Double.doubleToRawLongBits(x.x);
+        long yx = Double.doubleToRawLongBits(y.x);
+        long xy = Double.doubleToRawLongBits(x.y);
+        long yy = Double.doubleToRawLongBits(y.y);
+        long xz = Double.doubleToRawLongBits(x.y);
+        long yz = Double.doubleToRawLongBits(y.y);
+        
+        return new LVect3d( Double.longBitsToDouble( xx | yx ), Double.longBitsToDouble( xy | yy ), Double.longBitsToDouble( xz | yz ) );
+    }
+
+    estimate {
+        return new Estimate_v3();
+    }
+}
+
+fn Xor {
+    in LDouble x;
+    in LDouble y;
+    fout LDouble;
+
+    eval {
+        long xl = Double.doubleToRawLongBits(x.val);
+        long yl = Double.doubleToRawLongBits(y.val);
+        
+        return new LDouble( Double.longBitsToDouble( xl ^ yl ) );
+    }
+
+    estimate {
+        return new Estimate_d();
+    }
+}
+
+fn Xor_v2 {
+    in LVect2d x;
+    in LVect2d y;
+    fout LVect2d;
+
+    eval {
+        long xx = Double.doubleToRawLongBits(x.x);
+        long yx = Double.doubleToRawLongBits(y.x);
+        long xy = Double.doubleToRawLongBits(x.y);
+        long yy = Double.doubleToRawLongBits(y.y);
+        
+        return new LVect2d( Double.longBitsToDouble( xx ^ yx ), Double.longBitsToDouble( xy ^ yy ) );
+    }
+
+    estimate {
+        return new Estimate_v2();
+    }
+}
+
+fn Xor_v3 {
+    in LVect3d x;
+    in LVect3d y;
+    fout LVect3d;
+
+    eval {
+        long xx = Double.doubleToRawLongBits(x.x);
+        long yx = Double.doubleToRawLongBits(y.x);
+        long xy = Double.doubleToRawLongBits(x.y);
+        long yy = Double.doubleToRawLongBits(y.y);
+        long xz = Double.doubleToRawLongBits(x.y);
+        long yz = Double.doubleToRawLongBits(y.y);
+        
+        return new LVect3d( Double.longBitsToDouble( xx ^ yx ), Double.longBitsToDouble( xy ^ yy ), Double.longBitsToDouble( xz ^ yz ) );
+    }
+
+    estimate {
+        return new Estimate_v3();
+    }
+}
+
+// ***********
+// *** Others
+// ***********
+
+fn Max {
+    in LDouble x;
+    in LDouble y;
+    fout LDouble;
+
+    eval {
+        return new LDouble( Math.max(x.val, y.val) );
+    }
+
+    estimate {
+        return new Estimate_d( Math.max(x.getMaximum() , y.getMaximum()),
+                Math.max(x.getMinimum() , y.getMinimum())
+                );
+    }
+}
+
+fn Min {
+    in LDouble x;
+    in LDouble y;
+    fout LDouble;
+
+    eval {
+        return new LDouble( Math.min(x.val, y.val) );
+    }
+
+    estimate {
+        return new Estimate_d( Math.min(x.getMaximum() , y.getMaximum()),
+                Math.min(x.getMinimum() , y.getMinimum())
+                );
+    }
+}
+
+fn Div {
+    in LDouble x;
+    in LDouble y;
+    fout LDouble;
+
+    eval {
+        return new LDouble( x.val / y.val );
+    }
+
+    estimate {
+        if(x.isConstant() && y.isConstant()) {
+            
+            double v = x.getCValue().val / y.getCValue().val;
+            return new Estimate_d(v,v);
+            
+        } else if(y.getMinimum() > 0 || y.getMaximum() < 0 ){
+            
+            double xmax = x.getMaximum();
+            double xmin = x.getMinimum();
+            double ymax = y.getMaximum();
+            double ymin = y.getMinimum();
+            
+            double a = xmax / ymax;
+            double b = xmin / ymax;
+            double c = xmax / ymin;
+            double d = xmin / ymin;
+        
+            double min = Math.min( Math.min(a,b), Math.min(c,d) );
+            double max = Math.max( Math.max(a,b), Math.max(c,d) );
+            return new Estimate_d(min,max);
+        } else
+            return new Estimate_d();
+    }
+}
+
+fn Atan2 {
+    in LDouble x;
+    in LDouble y;
+    fout LDouble;
+
+    eval {
+        return new LDouble( Math.atan2(y.val, x.val) );
+    }
+
+    estimate {
+        if(x.isConstant() && y.isConstant()) {
+            
+            double xv = x.getCValue().val;
+            double yv = y.getCValue().val;
+            
+            double theta = Math.atan2(yv, xv);
+
+            return new Estimate_d(theta,theta);
+        }
+        
+        return new Estimate_d(
+                -Math.PI, Math.PI
+                );
+    }
+}
+

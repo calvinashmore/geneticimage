@@ -1,0 +1,566 @@
+
+group Gradient;
+
+fn Scalar {
+    nbin LDouble x(ContextXY);
+    fout LVect2d;
+
+    necessaryContext {"x","y"}
+
+    local {
+        private static final double delta = 0.05;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LDouble a,b,c,d;
+
+        x.setContext(new ContextXY(x1 - delta, y1)); a = xEval;
+        x.setContext(new ContextXY(x1 + delta, y1)); b = xEval;
+        x.setContext(new ContextXY(x1, y1 - delta)); c = xEval;
+        x.setContext(new ContextXY(x1, y1 + delta)); d = xEval;
+
+        LVect2d r = new LVect2d();
+        r.x = (b.val - a.val) / (2*delta);
+        r.y = (d.val - c.val) / (2*delta);
+        
+        return r;
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_v2(0,0,0,0);
+        else return new Estimate_v2();
+    }
+}
+
+fn v2_d {
+    in LVect2d v;
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+
+    necessaryContext {"x","y"}
+
+    eval {
+
+        double deltax = 0.05 * v.x;
+        double deltay = 0.05 * v.y;
+
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LDouble a,b;
+
+        x.setContext(new ContextXY(x1 - deltax, y1 - deltay)); a = xEval;
+        x.setContext(new ContextXY(x1 + deltax, y1 + deltay)); b = xEval;
+        
+        return b.sub(a).mult(0.5/Math.sqrt(deltax*deltax + deltay*deltay) );
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_d(0,0);
+        else return new Estimate_d();
+    }
+}
+
+fn v2_v2 {
+    in LVect2d v;
+    nbin LVect2d x(ContextXY);
+    fout LVect2d;
+
+    necessaryContext {"x","y"}
+
+    eval {
+
+        double deltax = 0.05 * v.x;
+        double deltay = 0.05 * v.y;
+
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect2d a,b;
+
+        x.setContext(new ContextXY(x1 - deltax, y1 - deltay)); a = xEval;
+        x.setContext(new ContextXY(x1 + deltax, y1 + deltay)); b = xEval;
+        
+        return b.sub(a).mult(0.5/Math.sqrt(deltax*deltax + deltay*deltay) );
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_v2(0,0,0,0);
+        else return new Estimate_v2();
+    }
+}
+
+fn v2_v3 {
+    in LVect2d v;
+    nbin LVect3d x(ContextXY);
+    fout LVect3d;
+
+    necessaryContext {"x","y"}
+
+    eval {
+
+        double deltax = 0.05 * v.x;
+        double deltay = 0.05 * v.y;
+
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect3d a,b;
+
+        x.setContext(new ContextXY(x1 - deltax, y1 - deltay)); a = xEval;
+        x.setContext(new ContextXY(x1 + deltax, y1 + deltay)); b = xEval;
+        
+        return b.sub(a).mult(0.5/Math.sqrt(deltax*deltax + deltay*deltay) );
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_v3(0,0,0,0,0,0);
+        else return new Estimate_v3();
+    }
+}
+
+fn vardelta {
+    nbin LDouble x(ContextXY);
+    fout LVect2d;
+    in LDouble ldelta;
+
+    necessaryContext {"x","y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double delta = ldelta.val;
+
+        LDouble a,b,c,d;
+
+        x.setContext(new ContextXY(x1 - delta, y1)); a = xEval;
+        x.setContext(new ContextXY(x1 + delta, y1)); b = xEval;
+        x.setContext(new ContextXY(x1, y1 - delta)); c = xEval;
+        x.setContext(new ContextXY(x1, y1 + delta)); d = xEval;
+
+        LVect2d r = new LVect2d();
+        r.x = (b.val - a.val) / (2*delta);
+        r.y = (d.val - c.val) / (2*delta);
+        
+        return r;
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_v2(0,0,0,0);
+        else return new Estimate_v2();
+    }
+}
+
+fn x {
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+
+    necessaryContext {"x","y"}
+
+    local {
+        private static final double delta = 0.05;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LDouble a,b;
+
+        x.setContext(new ContextXY(x1 - delta, y1)); a = xEval;
+        x.setContext(new ContextXY(x1 + delta, y1)); b = xEval;
+
+        LDouble r = new LDouble();
+        r.val = (b.val - a.val) / (2*delta);
+        
+        return r;
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_d(0,0);
+        else return new Estimate_d();
+    }
+}
+
+fn x_vardelta {
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+    in LDouble ldelta;
+
+    necessaryContext {"x","y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double delta = ldelta.val;
+
+        LDouble a,b;
+
+        x.setContext(new ContextXY(x1 - delta, y1)); a = xEval;
+        x.setContext(new ContextXY(x1 + delta, y1)); b = xEval;
+
+        LDouble r = new LDouble();
+        r.val = (b.val - a.val) / (2*delta);
+        
+        return r;
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_d(0,0);
+        else return new Estimate_d();
+    }
+}
+
+fn x_v2 {
+    nbin LVect2d x(ContextXY);
+    fout LVect2d;
+
+    necessaryContext {"x","y"}
+
+    local {
+        private static final double delta = 0.05;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect2d a,b;
+
+        x.setContext(new ContextXY(x1 - delta, y1)); a = xEval;
+        x.setContext(new ContextXY(x1 + delta, y1)); b = xEval;
+
+        return b.sub(a).mult(0.5 / delta);
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_v2(0,0,0,0);
+        else return new Estimate_v2();
+    }
+}
+
+fn x_v3 {
+    nbin LVect3d x(ContextXY);
+    fout LVect3d;
+
+    necessaryContext {"x","y"}
+
+    local {
+        private static final double delta = 0.05;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect3d a,b;
+
+        x.setContext(new ContextXY(x1 - delta, y1)); a = xEval;
+        x.setContext(new ContextXY(x1 + delta, y1)); b = xEval;
+
+        return b.sub(a).mult(0.5 / delta);
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_v3(0,0,0,0,0,0);
+        else return new Estimate_v3();
+    }
+}
+
+fn y {
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+
+    necessaryContext {"x","y"}
+
+    local {
+        private static final double delta = 0.05;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LDouble a,b;
+
+        x.setContext(new ContextXY(x1, y1 - delta)); a = xEval;
+        x.setContext(new ContextXY(x1, y1 + delta)); b = xEval;
+
+        LDouble r = new LDouble();
+        r.val = (b.val - a.val) / (2*delta);
+        
+        return r;
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_d(0,0);
+        else return new Estimate_d();
+    }
+}
+
+fn y_vardelta {
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+    in LDouble ldelta;
+
+    necessaryContext {"x","y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double delta = ldelta.val;
+
+        LDouble a,b;
+
+        x.setContext(new ContextXY(x1, y1 - delta)); a = xEval;
+        x.setContext(new ContextXY(x1, y1 + delta)); b = xEval;
+
+        LDouble r = new LDouble();
+        r.val = (b.val - a.val) / (2*delta);
+        
+        return r;
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_d(0,0);
+        else return new Estimate_d();
+    }
+}
+
+fn y_v2 {
+    nbin LVect2d x(ContextXY);
+    fout LVect2d;
+
+    necessaryContext {"x","y"}
+
+    local {
+        private static final double delta = 0.05;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect2d a,b;
+
+        x.setContext(new ContextXY(x1, y1 - delta)); a = xEval;
+        x.setContext(new ContextXY(x1, y1 + delta)); b = xEval;
+
+        return b.sub(a).mult(0.5 / delta);
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_v2(0,0,0,0);
+        else return new Estimate_v2();
+    }
+}
+
+fn y_v3 {
+    nbin LVect3d x(ContextXY);
+    fout LVect3d;
+
+    necessaryContext {"x","y"}
+
+    local {
+        private static final double delta = 0.05;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect3d a,b;
+
+        x.setContext(new ContextXY(x1, y1 - delta)); a = xEval;
+        x.setContext(new ContextXY(x1, y1 + delta)); b = xEval;
+
+        return b.sub(a).mult(0.5 / delta);
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_v3(0,0,0,0,0,0);
+        else return new Estimate_v3();
+    }
+}
+
+fn x_c {
+    nbin Complex x(ContextXY);
+    fout Complex;
+
+    necessaryContext {"x","y"}
+
+    local {
+        private static final double delta = 0.05;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Complex a,b;
+
+        x.setContext(new ContextXY(x1 - delta, y1)); a = xEval;
+        x.setContext(new ContextXY(x1 + delta, y1)); b = xEval;
+
+        return b.sub(a).mult(0.5 / delta);
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_c(0,0,0,0);
+        else return new Estimate_c();
+    }
+}
+
+fn y_c {
+    nbin Complex x(ContextXY);
+    fout Complex;
+
+    necessaryContext {"x","y"}
+
+    local {
+        private static final double delta = 0.05;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Complex a,b;
+
+        x.setContext(new ContextXY(x1, y1 - delta)); a = xEval;
+        x.setContext(new ContextXY(x1, y1 + delta)); b = xEval;
+
+        return b.sub(a).mult(0.5 / delta);
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_c(0,0,0,0);
+        else return new Estimate_c();
+    }
+}
+
+fn mag_c {
+    nbin Complex x(ContextXY);
+    fout Complex;
+
+    necessaryContext {"x","y"}
+
+    local {
+        private static final double delta = 0.05;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        double mag = Math.sqrt(x1*x1 + y1*y1);
+
+        double mag1 = mag * (1 - delta);
+        double mag2 = mag * (1 + delta);
+        double diff = mag2 - mag1;
+
+        double x0 = x1 / mag;
+        double y0 = y1 / mag;
+
+        Complex a,b;
+
+        x.setContext(new ContextXY(x0*mag1, y0*mag1)); a = xEval;
+        x.setContext(new ContextXY(x0*mag2, y0*mag2)); b = xEval;
+
+        return b.sub(a).mult(diff);
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_c(0,0,0,0);
+        else return new Estimate_c();
+    }
+}
+
+fn rad_c {
+    nbin Complex x(ContextXY);
+    fout Complex;
+
+    necessaryContext {"x","y"}
+
+    local {
+        private static final double delta = 0.05;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        double mag = Math.sqrt(x1*x1 + y1*y1);
+
+        double x0 = x1 / mag;
+        double y0 = y1 / mag;
+
+
+        double theta = Math.atan2(y1,x1);
+
+        Complex a,b;
+
+        x.setContext(new ContextXY(mag*Math.cos(theta-delta), mag*Math.sin(theta-delta))); a = xEval;
+        x.setContext(new ContextXY(mag*Math.cos(theta+delta), mag*Math.sin(theta+delta))); b = xEval;
+
+        return b.sub(a).mult(.5/delta);
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_c(0,0,0,0);
+        else return new Estimate_c();
+    }
+}
+
+fn v2_c {
+    nbin Complex x(ContextXY);
+    fout Complex;
+    in LVect2d v;
+
+    necessaryContext {"x","y"}
+
+    local {
+        private static final double delta = 0.05;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Complex a,b;
+
+        double deltax = delta * v.x;
+        double deltay = delta * v.y;
+
+        x.setContext(new ContextXY(x1 - deltax, y1 - deltay)); a = xEval;
+        x.setContext(new ContextXY(x1 + deltax, y1 + deltay)); b = xEval;
+
+        return b.sub(a).mult(.5/delta);
+    }
+
+    estimate {
+        if(x.isConstant())
+            return new Estimate_c(0,0,0,0);
+        else return new Estimate_c();
+    }
+}

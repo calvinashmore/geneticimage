@@ -1,0 +1,388 @@
+
+group Transform;
+
+// some basic transformations
+
+fn cross {
+    in LVect3d a;
+    in LVect3d b;
+    fout LVect3d;
+
+    eval {
+        return LVect3d.cross(a,b);
+    }
+
+    estimate {
+        Estimate_v3 x = (Estimate_v3)inputs[0];
+        Estimate_v3 y = (Estimate_v3)inputs[1];
+        
+        if(x.isConstant() && y.isConstant()) {
+            LVect3d r = LVect3d.cross(x.getCValue(),y.getCValue());
+            return new Estimate_v3(r,r);
+        }
+        
+        // cheap for now:
+        double v1 = x.getMaxMagnitude();
+        double v2 = y.getMaxMagnitude();
+        
+        return new Estimate_v3(
+                -v1*v2, v1*v2,
+                -v1*v2, v1*v2,
+                -v1*v2, v1*v2
+                );
+    }
+}
+
+fn dot_v2 {
+    in LVect2d a;
+    in LVect2d b;
+    fout LDouble;
+
+    eval {
+        return new LDouble(a.x*b.x + a.y*b.y);
+    }
+
+    estimate {
+        
+        double ax = a.getXMaximum() * b.getXMaximum();
+        double bx = a.getXMaximum() * b.getXMinimum();
+        double cx = a.getXMinimum() * b.getXMaximum();
+        double dx = a.getXMinimum() * b.getXMinimum();
+        double ay = a.getYMaximum() * b.getYMaximum();
+        double by = a.getYMaximum() * b.getYMinimum();
+        double cy = a.getYMinimum() * b.getYMaximum();
+        double dy = a.getYMinimum() * b.getYMinimum();
+        
+        
+        return new Estimate_d(
+                Math.max( Math.max(ax, bx) , Math.max(cx, dx)) + Math.max( Math.max(ay, by) , Math.max(cy, dy)), 
+                Math.min( Math.min(ax, bx) , Math.min(cx, dx)) + Math.min( Math.min(ay, by) , Math.min(cy, dy))
+                );
+    }
+}
+
+fn dot_v3 {
+    in LVect3d a;
+    in LVect3d b;
+    fout LDouble;
+
+    eval {
+        return new LDouble(a.x*b.x + a.y*b.y + a.z*b.z);
+    }
+
+    estimate {
+        double ax = a.getXMaximum() * b.getXMaximum();
+        double bx = a.getXMaximum() * b.getXMinimum();
+        double cx = a.getXMinimum() * b.getXMaximum();
+        double dx = a.getXMinimum() * b.getXMinimum();
+        double ay = a.getYMaximum() * b.getYMaximum();
+        double by = a.getYMaximum() * b.getYMinimum();
+        double cy = a.getYMinimum() * b.getYMaximum();
+        double dy = a.getYMinimum() * b.getYMinimum();
+        double az = a.getZMaximum() * b.getZMaximum();
+        double bz = a.getZMaximum() * b.getZMinimum();
+        double cz = a.getZMinimum() * b.getZMaximum();
+        double dz = a.getZMinimum() * b.getZMinimum();
+        
+        
+        return new Estimate_d(
+                Math.max( Math.max(ax, bx) , Math.max(cx, dx)) +
+                Math.max( Math.max(ay, by) , Math.max(cy, dy)) + 
+                Math.max( Math.max(az, bz) , Math.max(cz, dz)), 
+                
+                Math.min( Math.min(ax, bx) , Math.min(cx, dx)) +
+                Math.min( Math.min(ay, by) , Math.min(cy, dy)) +
+                Math.min( Math.min(az, bz) , Math.min(cz, dz))
+                );
+    }
+}
+
+fn Magnitude_c {
+    in Complex x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.magnitude());
+    }
+
+    estimate {
+        return new Estimate_d(
+                x.getMinMagnitude(), x.getMaxMagnitude()
+                );
+    }
+}
+
+fn Magnitude_v2 {
+    in LVect2d x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.magnitude());
+    }
+
+    estimate {
+        return new Estimate_d(
+                x.getMinMagnitude(), x.getMaxMagnitude()
+                );
+    }
+}
+
+fn Magnitude_v3 {
+    in LVect3d x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(x.magnitude());
+    }
+
+    estimate {
+        return new Estimate_d(
+                x.getMinMagnitude(), x.getMaxMagnitude()
+                );
+    }
+}
+
+fn Rotate_v2 {
+    in LVect2d x;
+    in LDouble angle;
+    fout LVect2d;
+
+    eval {
+        LVect2d r = new LVect2d();
+        r.x = x.x*Math.cos(angle.val) + x.y*Math.sin(angle.val);
+        r.y = x.y*Math.cos(angle.val) - x.x*Math.sin(angle.val);
+        return r;
+    }
+
+    estimate {
+        return new Estimate_v2(
+                -x.getMaxMagnitude(), x.getMaxMagnitude(),
+                -x.getMaxMagnitude(), x.getMaxMagnitude()
+                );
+    }
+}
+
+fn Rotate_c {
+    in Complex x;
+    in LDouble angle;
+    fout Complex;
+
+    eval {
+        Complex r = new Complex();
+        r.x = x.x*Math.cos(angle.val) + x.y*Math.sin(angle.val);
+        r.y = x.y*Math.cos(angle.val) - x.x*Math.sin(angle.val);
+        return r;
+    }
+
+    estimate {
+        return new Estimate_c(
+                -x.getMaxMagnitude(), x.getMaxMagnitude(),
+                -x.getMaxMagnitude(), x.getMaxMagnitude()
+                );
+    }
+}
+
+fn Squash2 {
+    in LDouble x;
+    in LDouble y;
+    fout LDouble;
+
+    eval {
+        return new LDouble( x.val / (Math.abs(y.val) + Math.abs(x.val)) );
+    }
+
+    estimate {
+        if(y.getMinimum() > 0) {
+            double min1 = x.getMinimum() / (y.getMinimum() + x.getMinimum());
+            double max1 = x.getMaximum() / (y.getMinimum() + x.getMaximum());
+            return new Estimate_d(min1,max1);
+        } else if(y.getMaximum() < 0) {
+            double min1 = x.getMinimum() / (y.getMaximum() + x.getMinimum());
+            double max1 = x.getMaximum() / (y.getMaximum() + x.getMaximum());
+            return new Estimate_d(min1,max1);
+        } else {
+            double yv = Math.max(y.getMaximum(), -y.getMinimum());
+            double min1 = x.getMinimum() / (yv + x.getMinimum());
+            double max1 = x.getMaximum() / (yv + x.getMaximum());
+            return new Estimate_d(min1,max1);
+        }
+    }
+}
+
+fn Theta_c {
+    in Complex x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(Math.atan2(x.y,x.x));
+    }
+
+    estimate {
+        if(x.isConstant()) {
+            
+            double xv = x.getXMaximum();
+            double yv = x.getYMaximum();
+            
+            double theta = Math.atan2(yv, xv);
+
+            return new Estimate_d(theta,theta);
+        }
+        
+        return new Estimate_d(
+                -Math.PI, Math.PI
+                );
+    }
+}
+
+fn Theta_v2 {
+    in LVect2d x;
+    fout LDouble;
+
+    eval {
+        return new LDouble(Math.atan2(x.y,x.x));
+    }
+
+    estimate {
+        if(x.isConstant()) {
+            
+            double xv = x.getXMaximum();
+            double yv = x.getYMaximum();
+            
+            double theta = Math.atan2(yv, xv);
+
+            return new Estimate_d(theta,theta);
+        }
+        
+        return new Estimate_d(
+                -Math.PI, Math.PI
+                );
+    }
+}
+
+fn Transform_v2 {
+    in LVect2d x;
+    fout LVect2d;
+
+    parameter double a;
+    parameter double b;
+    parameter double c;
+    parameter double d;
+
+    init {
+        Random rand = new Random();
+        a = 2*rand.nextDouble() - 1;
+        b = 2*rand.nextDouble() - 1;
+        c = 2*rand.nextDouble() - 1;
+        d = 2*rand.nextDouble() - 1;
+    }
+
+    eval {
+        return new LVect2d(
+            a*x.x + b*x.y,
+            c*x.x + d*x.y
+            );
+    }
+
+    estimate {
+        double xmin = Math.min(a*x.getXMinimum(), a*x.getXMaximum()) + Math.min(b*x.getYMinimum(), b*x.getYMaximum());
+        double xmax = Math.max(a*x.getXMinimum(), a*x.getXMaximum()) + Math.max(b*x.getYMinimum(), b*x.getYMaximum());
+        double ymin = Math.min(c*x.getXMinimum(), c*x.getXMaximum()) + Math.min(d*x.getYMinimum(), d*x.getYMaximum());
+        double ymax = Math.max(c*x.getXMinimum(), c*x.getXMaximum()) + Math.max(d*x.getYMinimum(), d*x.getYMaximum());
+        return new Estimate_v2(xmin,xmax, ymin,ymax);
+    }
+}
+
+fn Transform_v3 {
+    in LVect3d x;
+    fout LVect3d;
+
+    parameter double a;
+    parameter double b;
+    parameter double c;
+    parameter double d;
+    parameter double e;
+    parameter double f;
+    parameter double g;
+    parameter double h;
+    parameter double j;
+
+    init {
+        Random rand = new Random();
+        a = 2*rand.nextDouble() - 1;
+        b = 2*rand.nextDouble() - 1;
+        c = 2*rand.nextDouble() - 1;
+        d = 2*rand.nextDouble() - 1;
+        e = 2*rand.nextDouble() - 1;
+        f = 2*rand.nextDouble() - 1;
+        g = 2*rand.nextDouble() - 1;
+        h = 2*rand.nextDouble() - 1;
+        j = 2*rand.nextDouble() - 1;
+    }
+
+    eval {
+        return new LVect3d(
+            a*x.x + b*x.y + c*x.z,
+            d*x.x + e*x.y + f*x.z,
+            g*x.x + h*x.y + j*x.z
+            );
+    }
+
+    estimate {
+        double xmin = Math.min(a*x.getXMinimum(), a*x.getXMaximum()) + Math.min(b*x.getYMinimum(), b*x.getYMaximum()) + Math.min(c*x.getZMinimum(), c*x.getZMaximum());
+        double xmax = Math.max(a*x.getXMinimum(), a*x.getXMaximum()) + Math.max(b*x.getYMinimum(), b*x.getYMaximum()) + Math.max(c*x.getZMinimum(), c*x.getZMaximum());
+        double ymin = Math.min(d*x.getXMinimum(), d*x.getXMaximum()) + Math.min(e*x.getYMinimum(), e*x.getYMaximum()) + Math.min(f*x.getZMinimum(), f*x.getZMaximum());
+        double ymax = Math.max(d*x.getXMinimum(), d*x.getXMaximum()) + Math.max(e*x.getYMinimum(), e*x.getYMaximum()) + Math.max(f*x.getZMinimum(), f*x.getZMaximum());
+        double zmin = Math.min(g*x.getXMinimum(), g*x.getXMaximum()) + Math.min(h*x.getYMinimum(), h*x.getYMaximum()) + Math.min(j*x.getZMinimum(), j*x.getZMaximum());
+        double zmax = Math.max(g*x.getXMinimum(), g*x.getXMaximum()) + Math.max(h*x.getYMinimum(), h*x.getYMaximum()) + Math.max(j*x.getZMinimum(), j*x.getZMaximum());
+        
+        return new Estimate_v3(xmin,xmax, ymin,ymax, zmin, zmax);
+    }
+}
+
+fn Transform_col {
+    in Color x;
+    fout Color;
+
+    parameter double a;
+    parameter double b;
+    parameter double c;
+    parameter double d;
+    parameter double e;
+    parameter double f;
+    parameter double g;
+    parameter double h;
+    parameter double j;
+
+    init {
+        Random rand = new Random();
+        a = 2*rand.nextDouble() - 1;
+        b = 2*rand.nextDouble() - 1;
+        c = 2*rand.nextDouble() - 1;
+        d = 2*rand.nextDouble() - 1;
+        e = 2*rand.nextDouble() - 1;
+        f = 2*rand.nextDouble() - 1;
+        g = 2*rand.nextDouble() - 1;
+        h = 2*rand.nextDouble() - 1;
+        j = 2*rand.nextDouble() - 1;
+    }
+
+    eval {
+        return new Color(
+            a*x.r + b*x.g + c*x.b,
+            d*x.r + e*x.g + f*x.b,
+            g*x.r + h*x.g + j*x.b
+            );
+    }
+
+    estimate {
+        double xmin = Math.min(a*x.getRMinimum(), a*x.getRMaximum()) + Math.min(b*x.getGMinimum(), b*x.getGMaximum()) + Math.min(c*x.getBMinimum(), c*x.getBMaximum());
+        double xmax = Math.max(a*x.getRMinimum(), a*x.getRMaximum()) + Math.max(b*x.getGMinimum(), b*x.getGMaximum()) + Math.max(c*x.getBMinimum(), c*x.getBMaximum());
+        double ymin = Math.min(d*x.getRMinimum(), d*x.getRMaximum()) + Math.min(e*x.getGMinimum(), e*x.getGMaximum()) + Math.min(f*x.getBMinimum(), f*x.getBMaximum());
+        double ymax = Math.max(d*x.getRMinimum(), d*x.getRMaximum()) + Math.max(e*x.getGMinimum(), e*x.getGMaximum()) + Math.max(f*x.getBMinimum(), f*x.getBMaximum());
+        double zmin = Math.min(g*x.getRMinimum(), g*x.getRMaximum()) + Math.min(h*x.getGMinimum(), h*x.getGMaximum()) + Math.min(j*x.getBMinimum(), j*x.getBMaximum());
+        double zmax = Math.max(g*x.getRMinimum(), g*x.getRMaximum()) + Math.max(h*x.getGMinimum(), h*x.getGMaximum()) + Math.max(j*x.getBMinimum(), j*x.getBMaximum());
+        
+        return new Estimate_col(xmin,xmax, ymin,ymax, zmin, zmax);
+    }
+}
+

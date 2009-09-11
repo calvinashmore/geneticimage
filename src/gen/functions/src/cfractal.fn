@@ -1,0 +1,914 @@
+
+group CFractal;
+
+
+// **************
+// *** FUNCTIONS!
+// **************
+
+fn cf_z2c {
+    fout FractalFunction;
+    interface FractalFunction;
+
+    local {        
+        public void apply(Complex z, Complex c, Complex z1) {
+            z1.x = z.x*z.x - z.y*z.y + c.x;
+            z1.y = 2*z.x*z.y + c.y;
+        }
+
+        public double getBailAmmount() {
+            return 2.0;
+        }
+
+        public boolean isZeroStable() {return true;}
+    }
+    
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+/*
+fn cf_z2binomialc {
+    fout FractalFunction;
+    interface FractalFunction;
+
+    local {        
+        public void apply(Complex z, Complex c, Complex z1) {
+            Complex z2 = z.mult(z);
+            Complex z3 = z2.mult(z);
+            z1 = z.sub( z3.add(z2.mult(3)).add(z.mult(3)).div( z2.mult(3).add(z.mult(6)).add(new Complex(3,0)) )  ).add(c);
+        }
+
+        public double getBailAmmount() {
+            return 2.0;
+        }
+
+        public boolean isZeroStable() {return true;}
+    }
+    
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn cf_z2binomial2c {
+    fout FractalFunction;
+    interface FractalFunction;
+
+    local {        
+        public void apply(Complex z, Complex c, Complex z1) {
+            Complex z2 = z.mult(z);
+            Complex z3 = z2.mult(z);
+            z1 = z.sub( z3.add(z2.mult(3)).add(z.mult(3)).div( z.mult(9).add(new Complex(3,0)) )  ).add(c);
+        }
+
+        public double getBailAmmount() {
+            return 2.0;
+        }
+
+        public boolean isZeroStable() {return true;}
+    }
+    
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}*/
+
+fn cf_z2c_nh1 {
+    fout FractalFunction;
+    interface FractalFunction;
+
+    parameter double a;
+    parameter double b;
+    parameter double e;
+    parameter double d;
+
+    init {
+        a = 2*Math.random() - 1;
+        b = 2*Math.random() - 1;
+        e = 2*Math.random() - 1;
+        d = 2*Math.random() - 1;
+    }
+
+    local {        
+        public void apply(Complex z, Complex c, Complex z1) {
+            z1.x = z.x*z.x - z.y*z.y + c.x + a*z.x + b*z.y;
+            z1.y = 2*z.x*z.y + c.y + e*z.x + d*z.y;
+        }
+
+        public double getBailAmmount() {
+            return 2.0;
+        }
+
+        public boolean isZeroStable() {return true;}
+    }
+    
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+fn cf_z2c_nh2 {
+    fout FractalFunction;
+    interface FractalFunction;
+
+    in LDouble ia;
+    in LDouble ib;
+    in LDouble ie;
+    in LDouble id;
+
+    local {      
+        private transient double a;
+        private transient double b;
+        private transient double e;
+        private transient double d;
+  
+        public void apply(Complex z, Complex c, Complex z1) {
+            z1.x = z.x*z.x - z.y*z.y + c.x + a*z.x + b*z.y;
+            z1.y = 2*z.x*z.y + c.y + e*z.x + d*z.y;
+        }
+
+        public double getBailAmmount() {
+            return 2.0;
+        }
+
+        public boolean isZeroStable() {return true;}
+    }
+    
+    eval {
+        a = ia.val;
+        b = ib.val;
+        e = ie.val;
+        d = id.val;
+        return this;
+    }
+    estimate { return new Estimate_param(null); }
+}
+
+fn cf_z3c {
+    fout FractalFunction;
+    interface FractalFunction;
+
+    local {        
+        public void apply(Complex z, Complex c, Complex z1) {
+            z1.x = z.x*z.x*z.x - 3*z.x*z.y*z.y + c.x;
+            z1.y = -z.y*z.y*z.y + 3*z.x*z.x*z.y + c.y;
+        }
+
+        public double getBailAmmount() {
+            return 2.0;
+        }
+
+        public boolean isZeroStable() {return true;}
+    }
+    
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn cf_zpowc1 {
+    fout FractalFunction;
+    interface FractalFunction;
+
+    parameter Complex power;
+
+    init {
+        power = new Complex();
+        power.x = 4*Math.random()-2;
+        power.y = 4*Math.random()-2;
+    }
+
+    local {        
+        public void apply(Complex z, Complex c, Complex z1) {
+            z1 = z.pow(power).add(c);
+        }
+
+        public double getBailAmmount() {
+            return 2.0;
+        }
+
+        public boolean isZeroStable() {return true;}
+    }
+    
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn cf_zpowc2 {
+    fout FractalFunction;
+    interface FractalFunction;
+
+    in Complex ipower;
+
+    init {
+        power = new Complex(2,0);
+    }
+
+    local {
+        private transient Complex power;
+
+        public void apply(Complex z, Complex c, Complex z1) {
+            z1 = z.pow(power).add(c);
+        }
+
+        public double getBailAmmount() {
+            return 2.0;
+        }
+
+        public boolean isZeroStable() {return true;}
+    }
+    
+    eval {
+        power = ipower;
+        return this;
+    }
+    estimate { return new Estimate_param(null); }
+}
+
+fn cf_csinz {
+    fout FractalFunction;
+    interface FractalFunction;
+
+    local {        
+        public void apply(Complex z, Complex c, Complex z1) {
+            z1.x = Math.sin(z.x)*Math.cosh(z.y)*(c.x) - Math.cos(z.x)*Math.sinh(z.y)*(c.y);
+            z1.y = Math.sin(z.x)*Math.cosh(z.y)*(c.y) + Math.cos(z.x)*Math.sinh(z.y)*(c.x);
+        }
+
+        public double getBailAmmount() {
+            return 100.0;
+        }
+
+        public boolean isZeroStable() {return true;}
+    }
+    
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn cf_ccosz {
+    fout FractalFunction;
+    interface FractalFunction;
+
+    local {        
+        public void apply(Complex z, Complex c, Complex z1) {
+            z1.x = Math.cos(z.x)*Math.cosh(z.y)*(c.x) + Math.sin(z.x)*Math.sinh(z.y)*(c.y);
+            z1.y = Math.cos(z.x)*Math.cosh(z.y)*(c.y) - Math.sin(z.x)*Math.sinh(z.y)*(c.x);
+        }
+
+        public double getBailAmmount() {
+            return 100.0;
+        }
+
+        public boolean isZeroStable() {return true;}
+    }
+    
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn cf_invertDragon1 {
+    fout FractalFunction;
+    interface FractalFunction;
+
+    local {
+        private double f1(double r) {
+            double v = (1 + r*r*r);
+            return r*(1 + 2*r + r*r)*(r*r - 1) / (v*v);
+        }
+        private double g1(double r) {
+            double v = (1 + r*r*r);
+            return r*(1 - 2*r + r*r)*(r*r - 1) / (v*v);
+        }
+
+        public void apply(Complex z, Complex c, Complex z1) {
+            double rad = c.magnitude();
+            z1.x = z.x*z.x - z.y*z.y + f1(rad) + c.x;
+            z1.y = 2*z.x*z.y + g1(rad) + c.y;
+        }
+
+        public double getBailAmmount() {
+            return 100.0;
+        }
+
+        public boolean isZeroStable() {return true;}
+    }
+    
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn cf_invertDragon2 {
+    fout FractalFunction;
+    interface FractalFunction;
+
+    local {
+        private double f1(double r) {
+            double v = (1 + r + Math.pow(r,7));
+            return r*(1 + 2*r + r*r)*(r*r - 1) / (v);
+        }
+        private double g1(double r) {
+            double v = (1 + r + Math.pow(r,7));
+            return r*(1 - 2*r + r*r)*(r*r - 1) / (v);
+        }
+
+        public void apply(Complex z, Complex c, Complex z1) {
+            double rad = c.magnitude();
+            z1.x = z.x*z.x - z.y*z.y + f1(rad) + c.x;
+            z1.y = 2*z.x*z.y + g1(rad) + c.y;
+        }
+
+        public double getBailAmmount() {
+            return 100.0;
+        }
+
+        public boolean isZeroStable() {return true;}
+    }
+    
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+// *************
+// *** BAILOUTS!
+// *************
+
+fn bail_mod {
+    fout FractalBailout;
+    interface FractalBailout;
+
+    local {
+        public boolean test(Complex z, double ammount) {
+            return z.x*z.x + z.y*z.y < ammount*ammount;
+        }
+    }
+
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn bail_max {
+    fout FractalBailout;
+    interface FractalBailout;
+
+    local {
+        public boolean test(Complex z, double ammount) {
+            return Math.max(Math.abs(z.x), Math.abs(z.y)) < ammount;
+        }
+    }
+
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn bail_min {
+    fout FractalBailout;
+    interface FractalBailout;
+
+    local {
+        public boolean test(Complex z, double ammount) {
+            return Math.min(Math.abs(z.x), Math.abs(z.y)) < ammount;
+        }
+    }
+
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn bail_add1 {
+    fout FractalBailout;
+    interface FractalBailout;
+
+    local {
+        public boolean test(Complex z, double ammount) {
+            return Math.abs(z.x + z.y) < ammount;
+        }
+    }
+
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn bail_add2 {
+    fout FractalBailout;
+    interface FractalBailout;
+
+    local {
+        public boolean test(Complex z, double ammount) {
+            return Math.abs(z.x) + Math.abs(z.y) < ammount;
+        }
+    }
+
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn bail_cross {
+    fout FractalBailout;
+    interface FractalBailout;
+
+    local {
+        public boolean test(Complex z, double ammount) {
+            return Math.abs(z.x*z.y) < ammount;
+        }
+    }
+
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn bail_re {
+    fout FractalBailout;
+    interface FractalBailout;
+
+    local {
+        public boolean test(Complex z, double ammount) {
+            return Math.abs(z.x) < ammount;
+        }
+    }
+
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+fn bail_im {
+    fout FractalBailout;
+    interface FractalBailout;
+
+    local {
+        public boolean test(Complex z, double ammount) {
+            return Math.abs(z.y) < ammount;
+        }
+    }
+
+    eval { return this; }
+    estimate { return new Estimate_param(null); }
+}
+
+// ***********************
+// *** RESULT INTERPRETERS
+// ***********************
+
+fn result_c {
+    in CFractalResult r;
+    fout Complex;
+
+    eval {
+        return r.endPoint;
+    }
+
+    estimate {
+        return new Estimate_c();
+    }
+}
+
+fn result_i {
+    in CFractalResult r;
+    fout LDouble;
+
+    eval {
+        return new LDouble((double)r.iteration / r.maxIterations);
+    }
+
+    estimate {
+        return new Estimate_d(0,1);
+    }
+}
+
+// a bit cheating, but hey
+fn result_v3_1 {
+    in CFractalResult r;
+    fout LVect3d;
+
+    eval {
+        return new LVect3d(
+            r.endPoint.x,
+            r.endPoint.y,
+            (double)r.iteration / r.maxIterations
+            );
+    }
+
+    estimate {
+        return new Estimate_v3();
+    }
+}
+fn result_v3_2 {
+    in CFractalResult r;
+    fout LVect3d;
+
+    eval {
+        return new LVect3d(
+            r.endPoint.x,
+            (double)r.iteration / r.maxIterations,
+            r.endPoint.y
+            );
+    }
+
+    estimate {
+        return new Estimate_v3();
+    }
+}
+fn result_v3_3 {
+    in CFractalResult r;
+    fout LVect3d;
+
+    eval {
+        return new LVect3d(
+            (double)r.iteration / r.maxIterations,
+            r.endPoint.x,
+            r.endPoint.y
+            );
+    }
+
+    estimate {
+        return new Estimate_v3();
+    }
+}
+fn result_v3_4 {
+    in CFractalResult r;
+    fout LVect3d;
+
+    eval {
+        return new LVect3d(
+            r.endPoint.magnitude(),
+            r.endPoint.theta(),
+            (double)r.iteration / r.maxIterations
+            );
+    }
+
+    estimate {
+        return new Estimate_v3();
+    }
+}
+fn result_v3_5 {
+    in CFractalResult r;
+    fout LVect3d;
+
+    eval {
+        return new LVect3d(
+            r.endPoint.magnitude(),
+            (double)r.iteration / r.maxIterations,
+            r.endPoint.theta()
+            );
+    }
+
+    estimate {
+        return new Estimate_v3();
+    }
+}
+fn result_v3_6 {
+    in CFractalResult r;
+    fout LVect3d;
+
+    eval {
+        return new LVect3d(
+            (double)r.iteration / r.maxIterations,
+            r.endPoint.magnitude(),
+            r.endPoint.theta()
+            );
+    }
+
+    estimate {
+        return new Estimate_v3();
+    }
+}
+
+
+// **************
+// *** EVALUATORS
+// **************
+
+fn evaluate_mandel {
+    nbin FractalFunction f(ContextXY);
+    nbin FractalBailout bail(ContextXY);
+    in Complex input;
+    fout CFractalResult;
+
+    parameter Complex zCenter;
+    parameter double viewRadius;
+
+    necessaryContext {"x","y"}
+
+    local {
+
+        private static final int maxIterations = 500;
+        private static final double targetZoom = .001;
+
+        private Complex transform(Complex z) {
+            return z.mult(viewRadius).add(zCenter);
+        }
+
+        private boolean check(Complex z) {
+            FractalFunction f = (FractalFunction)getNode(0).getFunction();
+            FractalBailout bail = (FractalBailout)getNode(1).getFunction();
+            Complex c = new Complex(z);
+            Complex z0 = new Complex(z);
+            Complex z1 = new Complex();
+            double bailAmmount = f.getBailAmmount();
+            for(int i=0;i<maxIterations;i++) {
+                f.apply(z0,c,z1);
+                if(!bail.test(z1,bailAmmount))
+                    return false;
+                z0.x = z1.x;
+                z0.y = z1.y;
+            }
+            return true;
+        }
+
+        private Complex getZoomCenter(Complex oldCenter, double range, Random rand) {
+
+            FractalFunction f1 = (FractalFunction)getNode(0).getFunction();
+
+            Complex inside=null, outside=null;
+            for(int i=0;i<200;i++) {
+                Complex test = new Complex();
+                test.x = oldCenter.x + range*(2*rand.nextDouble()-1);
+                test.y = oldCenter.y + range*(2*rand.nextDouble()-1);
+                if(check(test)) {
+                    inside = test;
+                    if(outside != null)
+                        break;
+                } else {
+                    outside = test;
+                    if(inside != null)
+                        break;
+                }
+            }
+
+            if(inside == null || outside == null) {
+                if(inside == null) {
+                    inside = new Complex(oldCenter);
+                    while(!check(inside)) {
+                        if(f1.isZeroStable())
+                            inside.multv(.9);
+                        else
+                            inside.multv(2.1);
+                    }
+                }
+
+                if(outside == null) {
+                    outside = new Complex(oldCenter);
+                    while(check(outside)) {
+                        if(f1.isZeroStable())
+                            outside.multv(2.1);
+                        else
+                            outside.multv(.9);
+                    }
+                }
+            }
+
+            // start outside and go in until reaching the inside
+            for(int i=0;i<=100;i++) {
+                Complex v = new Complex();
+                if(f1.isZeroStable()) {
+                    v.x = (1 - i/100.0) * outside.x + (i/100.0) * inside.x;
+                    v.y = (1 - i/100.0) * outside.y + (i/100.0) * inside.y;
+                } else {
+                    v.x = (i/100.0) * outside.x + (1 - i/100.0) * inside.x;
+                    v.y = (i/100.0) * outside.y + (1 - i/100.0) * inside.y;
+                }
+                if(check(v))
+                    return v;
+            }
+
+            System.out.print("??? ");
+
+            return new Complex(
+                (inside.x + outside.x)/2,
+                (inside.y + outside.y)/2
+                );
+        }
+
+        private boolean built = false;
+    }
+
+    setup {
+        if(built)
+            return;
+
+        // builds xCenter and the viewRadius
+        Random rand = new Random();
+
+        double radius = 2.0;
+        Complex center = new Complex();
+        while(radius > targetZoom) {
+            center = getZoomCenter(center,radius,rand);
+            radius *= .8;
+        }
+
+        viewRadius = radius;
+        zCenter = center;
+
+        built = true;
+    }
+
+    eval {
+        FractalFunction f1 = (FractalFunction)getNode(0).getFunction();
+        FractalBailout bail1 = (FractalBailout)getNode(1).getFunction();
+        Complex c = transform(input);
+        Complex z0 = transform(input);
+        Complex z1 = new Complex();
+
+        CFractalResult r = new CFractalResult();
+        r.maxIterations = maxIterations;
+        r.iteration = maxIterations;
+
+        double bailAmmount = f1.getBailAmmount();
+        for(int i=0;i<maxIterations;i++) {
+            f1.apply(z0,c,z1);
+            if(!bail1.test(z1,bailAmmount)) {
+                r.iteration = i;
+                break;
+            }
+            z0.x = z1.x;
+            z0.y = z1.y;
+        }
+        r.endPoint = z1;
+        return r;
+    }
+
+    estimate {
+        return new Estimate_param(null);
+    }
+}
+
+fn evaluate_julia {
+    nbin FractalFunction f(ContextXY);
+    nbin FractalBailout bail(ContextXY);
+    in Complex input;
+    fout CFractalResult;
+
+    necessaryContext {"x","y"}
+
+    parameter Complex myC;
+    parameter Complex zCenter;
+    parameter double viewRadius;
+
+    local {
+
+        private static final int maxIterations = 500;
+        private static final double targetZoom = .001;
+
+        private Complex transform(Complex z) {
+            return z.mult(viewRadius).add(zCenter);
+        }
+
+        private boolean check_m(Complex z) {
+            FractalFunction f = (FractalFunction)getNode(0).getFunction();
+            FractalBailout bail = (FractalBailout)getNode(1).getFunction();
+            Complex c = new Complex(z);
+            Complex z0 = new Complex(z);
+            Complex z1 = new Complex();
+            double bailAmmount = f.getBailAmmount();
+            for(int i=0;i<maxIterations;i++) {
+                f.apply(z0,c,z1);
+                if(!bail.test(z1,bailAmmount))
+                    return false;
+                z0.x = z1.x;
+                z0.y = z1.y;
+            }
+            return true;
+        }
+
+        private boolean check_j(Complex z) {
+            FractalFunction f = (FractalFunction)getNode(0).getFunction();
+            FractalBailout bail = (FractalBailout)getNode(1).getFunction();
+            Complex c = new Complex(myC);
+            Complex z0 = new Complex(z);
+            Complex z1 = new Complex();
+            double bailAmmount = f.getBailAmmount();
+            for(int i=0;i<maxIterations;i++) {
+                f.apply(z0,c,z1);
+                if(!bail.test(z1,bailAmmount))
+                    return false;
+                z0.x = z1.x;
+                z0.y = z1.y;
+            }
+            return true;
+        }
+
+        private boolean check(Complex test, boolean j) {
+            return j ? check_j(test) : check_m(test);
+        }
+
+        private Complex getZoomCenter(Complex oldCenter, double range, Random rand, boolean j) {
+
+            FractalFunction f1 = (FractalFunction)getNode(0).getFunction();
+
+            Complex inside=null, outside=null;
+            for(int i=0;i<200;i++) {
+                Complex test = new Complex();
+                test.x = oldCenter.x + range*(2*rand.nextDouble()-1);
+                test.y = oldCenter.y + range*(2*rand.nextDouble()-1);
+                if(check(test,j)) {
+                    inside = test;
+                    if(outside != null)
+                        break;
+                } else {
+                    outside = test;
+                    if(inside != null)
+                        break;
+                }
+            }
+
+            if(inside == null || outside == null) {
+                if(inside == null) {
+                    inside = new Complex(oldCenter);
+                    while(!check(inside,j)) {
+                        if(f1.isZeroStable())
+                            inside.multv(.9);
+                        else
+                            inside.multv(2.1);
+                    }
+                }
+
+                if(outside == null) {
+                    outside = new Complex(oldCenter);
+                    while(check(outside,j)) {
+                        if(f1.isZeroStable())
+                            outside.multv(2.1);
+                        else
+                            outside.multv(.9);
+                    }
+                }
+            }
+
+            // start outside and go in until reaching the inside
+            for(int i=0;i<=100;i++) {
+                Complex v = new Complex();
+                if(f1.isZeroStable()) {
+                    v.x = (1 - i/100.0) * outside.x + (i/100.0) * inside.x;
+                    v.y = (1 - i/100.0) * outside.y + (i/100.0) * inside.y;
+                } else {
+                    v.x = (i/100.0) * outside.x + (1 - i/100.0) * inside.x;
+                    v.y = (i/100.0) * outside.y + (1 - i/100.0) * inside.y;
+                }
+                if(check(v,j))
+                    return v;
+            }
+
+            System.out.print("??? ");
+
+            return new Complex(
+                (inside.x + outside.x)/2,
+                (inside.y + outside.y)/2
+                );
+        }
+
+        private boolean built = false;
+    }
+
+    setup {
+        if(built)
+            return;
+
+        // determine c, center and view radius
+        Random rand = new Random();
+
+        double radius = 2.0;
+        Complex center = new Complex();
+        while(radius > targetZoom) {
+            center = getZoomCenter(center,radius,rand,false);
+            radius *= .8;
+        }
+
+        myC = center;
+
+        radius = 2.0;
+        center = new Complex();
+        while(radius > targetZoom) {
+            center = getZoomCenter(center,radius,rand,true);
+            radius *= .8;
+        }
+
+        viewRadius = radius;
+        zCenter = center;
+        built = true;
+    }
+
+    eval {
+        FractalFunction f1 = (FractalFunction)getNode(0).getFunction();
+        FractalBailout bail1 = (FractalBailout)getNode(1).getFunction();
+        Complex c = myC;
+        Complex z0 = transform(input);
+        Complex z1 = new Complex();
+
+        CFractalResult r = new CFractalResult();
+        r.maxIterations = maxIterations;
+        r.iteration = maxIterations;
+
+        double bailAmmount = f1.getBailAmmount();
+        for(int i=0;i<maxIterations;i++) {
+            f1.apply(z0,c,z1);
+            if(!bail1.test(z1,bailAmmount)) {
+                r.iteration = i;
+                break;
+            }
+            z0.x = z1.x;
+            z0.y = z1.y;
+        }
+        r.endPoint = z1;
+        return r;
+    }
+
+    estimate {
+        return new Estimate_param(null);
+    }
+}
+

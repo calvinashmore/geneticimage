@@ -1,0 +1,962 @@
+
+group Blur;
+
+fn d {
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+
+    necessaryContext {"x", "y"}
+
+    local {
+        private static final double radius = 0.01;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LDouble r = new LDouble();
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn d_d {
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+    in LDouble lradius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double radius = lradius.val*0.01;
+
+        LDouble r = new LDouble();
+
+        if(radius == 0) {
+            x.setContext(new ContextXY(x1, y1));
+            return xEval;
+        }
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn d_v2 {
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+    in LVect2d radius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LDouble r = new LDouble();
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius.x*i*0.01 + x1;
+            double newy = radius.y*j*0.01 + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v2 {
+    nbin LVect2d x(ContextXY);
+    fout LVect2d;
+
+    local {
+        private static final double radius = 0.01;
+    }
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect2d r = new LVect2d();
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v2_d {
+    nbin LVect2d x(ContextXY);
+    fout LVect2d;
+    in LDouble lradius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double radius = lradius.val*0.01;
+
+        LVect2d r = new LVect2d();
+
+        if(radius == 0) {
+            x.setContext(new ContextXY(x1, y1));
+            return xEval;
+        }
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v2_v2 {
+    nbin LVect2d x(ContextXY);
+    fout LVect2d;
+    in LVect2d radius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect2d r = new LVect2d();
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius.x*i*0.01 + x1;
+            double newy = radius.y*j*0.01 + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v3 {
+    nbin LVect3d x(ContextXY);
+    fout LVect3d;
+
+    necessaryContext {"x", "y"}
+
+    local {
+        private static final double radius = 0.01;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect3d r = new LVect3d();
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v3_d {
+    nbin LVect3d x(ContextXY);
+    fout LVect3d;
+    in LDouble lradius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double radius = lradius.val*0.01;
+
+        LVect3d r = new LVect3d();
+
+        if(radius == 0) {
+            x.setContext(new ContextXY(x1, y1));
+            return xEval;
+        }
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v3_v2 {
+    nbin LVect3d x(ContextXY);
+    fout LVect3d;
+    in LVect2d radius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect3d r = new LVect3d();
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius.x*i*0.01 + x1;
+            double newy = radius.y*j*0.01 + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn c {
+    nbin Complex x(ContextXY);
+    fout Complex;
+
+    local {
+        private static final double radius = 0.01;
+    }
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Complex r = new Complex();
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn c_d {
+    nbin Complex x(ContextXY);
+    fout Complex;
+    in LDouble lradius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double radius = lradius.val*0.01;
+
+        Complex r = new Complex();
+
+        if(radius == 0) {
+            x.setContext(new ContextXY(x1, y1));
+            return xEval;
+        }
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn c_v2 {
+    nbin Complex x(ContextXY);
+    fout Complex;
+    in LVect2d radius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Complex r = new Complex();
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius.x*i*0.01 + x1;
+            double newy = radius.y*j*0.01 + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn col {
+    nbin Color x(ContextXY);
+    fout Color;
+
+    necessaryContext {"x", "y"}
+
+    local {
+        private static final double radius = 0.01;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Color r = new Color();
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn col_d {
+    nbin Color x(ContextXY);
+    fout Color;
+    in LDouble lradius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double radius = lradius.val*0.01;
+
+        Color r = new Color();
+
+        if(radius == 0) {
+            x.setContext(new ContextXY(x1, y1));
+            return xEval;
+        }
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn col_v2 {
+    nbin Color x(ContextXY);
+    fout Color;
+    in LVect2d radius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Color r = new Color();
+
+        for(int i=-1;i<=1;i++)
+        for(int j=-1;j<=1;j++) {
+            double newx = radius.x*i*0.01 + x1;
+            double newy = radius.y*j*0.01 + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 9);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn d_2 {
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+
+    necessaryContext {"x", "y"}
+
+    local {
+        private static final double radius = 0.005;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LDouble r = new LDouble();
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn d_d_2 {
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+    in LDouble lradius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double radius = lradius.val*0.005;
+
+        LDouble r = new LDouble();
+
+        if(radius == 0) {
+            x.setContext(new ContextXY(x1, y1));
+            return xEval;
+        }
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn d_v2_2 {
+    nbin LDouble x(ContextXY);
+    fout LDouble;
+    in LVect2d radius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LDouble r = new LDouble();
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius.x*i*0.005 + x1;
+            double newy = radius.y*j*0.005 + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v2_2 {
+    nbin LVect2d x(ContextXY);
+    fout LVect2d;
+
+    local {
+        private static final double radius = 0.005;
+    }
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect2d r = new LVect2d();
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v2_d_2 {
+    nbin LVect2d x(ContextXY);
+    fout LVect2d;
+    in LDouble lradius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double radius = lradius.val*0.005;
+
+        LVect2d r = new LVect2d();
+
+        if(radius == 0) {
+            x.setContext(new ContextXY(x1, y1));
+            return xEval;
+        }
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v2_v2_2 {
+    nbin LVect2d x(ContextXY);
+    fout LVect2d;
+    in LVect2d radius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect2d r = new LVect2d();
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius.x*i*0.005 + x1;
+            double newy = radius.y*j*0.005 + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v3_2 {
+    nbin LVect3d x(ContextXY);
+    fout LVect3d;
+
+    necessaryContext {"x", "y"}
+
+    local {
+        private static final double radius = 0.005;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect3d r = new LVect3d();
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v3_d_2 {
+    nbin LVect3d x(ContextXY);
+    fout LVect3d;
+    in LDouble lradius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double radius = lradius.val*0.005;
+
+        LVect3d r = new LVect3d();
+
+        if(radius == 0) {
+            x.setContext(new ContextXY(x1, y1));
+            return xEval;
+        }
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn v3_v2_2 {
+    nbin LVect3d x(ContextXY);
+    fout LVect3d;
+    in LVect2d radius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        LVect3d r = new LVect3d();
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius.x*i*0.005 + x1;
+            double newy = radius.y*j*0.005 + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn c_2 {
+    nbin Complex x(ContextXY);
+    fout Complex;
+
+    local {
+        private static final double radius = 0.005;
+    }
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Complex r = new Complex();
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn c_d_2 {
+    nbin Complex x(ContextXY);
+    fout Complex;
+    in LDouble lradius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double radius = lradius.val*0.005;
+
+        Complex r = new Complex();
+
+        if(radius == 0) {
+            x.setContext(new ContextXY(x1, y1));
+            return xEval;
+        }
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn c_v2_2 {
+    nbin Complex x(ContextXY);
+    fout Complex;
+    in LVect2d radius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Complex r = new Complex();
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius.x*i*0.005 + x1;
+            double newy = radius.y*j*0.005 + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn col_2 {
+    nbin Color x(ContextXY);
+    fout Color;
+
+    necessaryContext {"x", "y"}
+
+    local {
+        private static final double radius = 0.005;
+    }
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Color r = new Color();
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn col_d_2 {
+    nbin Color x(ContextXY);
+    fout Color;
+    in LDouble lradius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+        double radius = lradius.val*0.005;
+
+        Color r = new Color();
+
+        if(radius == 0) {
+            x.setContext(new ContextXY(x1, y1));
+            return xEval;
+        }
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius*i + x1;
+            double newy = radius*j + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
+
+fn col_v2_2 {
+    nbin Color x(ContextXY);
+    fout Color;
+    in LVect2d radius;
+
+    necessaryContext {"x", "y"}
+
+    eval {
+        double x1 = (Double)context.getVariable("x");
+        double y1 = (Double)context.getVariable("y");
+
+        Color r = new Color();
+
+        for(int i=-2;i<=2;i++)
+        for(int j=-2;j<=2;j++) {
+            double newx = radius.x*i*0.005 + x1;
+            double newy = radius.y*j*0.005 + y1;
+            x.setContext(new ContextXY(newx, newy));
+            r.addv(xEval);
+        }
+
+        return r.mult(1.0 / 25);
+    }
+
+    estimate {
+        return x;
+    }
+}
