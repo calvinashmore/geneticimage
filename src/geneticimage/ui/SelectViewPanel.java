@@ -187,6 +187,12 @@ public class SelectViewPanel extends JPanel implements ActionListener {
             }
         }
         
+        if(e.getSource() == libraryButton){
+            FunctaionLibraryDialog dialog = new FunctaionLibraryDialog();
+            dialog.pack();
+            dialog.setVisible(true);
+        }
+        
         if(myImagePanel.getStructure() != null) {
 
             if(e.getSource() == storeButton)
@@ -204,11 +210,6 @@ public class SelectViewPanel extends JPanel implements ActionListener {
             if(e.getSource() == saveButton)
                 Application.getApplication().saveData(myImagePanel.getStructure());
 
-            if(e.getSource() == libraryButton){
-                FunctaionLibraryDialog dialog = new FunctaionLibraryDialog();
-                dialog.pack();
-                dialog.setVisible(true);
-            }
                 //Application.getApplication().saveData(myImagePanel.getStructure());
 
 //            if(e.getSource() == advancedButton) {
